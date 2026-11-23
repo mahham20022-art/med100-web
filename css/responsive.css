@@ -1,0 +1,9 @@
+/* Fine-tuning beyond what layout.css's single breakpoint handles. */
+@media (max-width: 360px) {
+  .ring { width: 180px; height: 180px; }
+  .ring-center .big { font-size: var(--fs-xl); }
+}
+@media (min-width: 720px) {
+  body { background: var(--color-surface-alt); }
+  #app-shell { max-width: var(--max-content-width); margin: 0 auto; background: var(--color-bg); min-height: 100vh; box-shadow: var(--shadow-md); }
+}
