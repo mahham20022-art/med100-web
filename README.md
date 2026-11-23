@@ -52,3 +52,4 @@ Live at `https://<you>.github.io/med100-web/` after the first successful run.
 ## Security note
 Firestore Security Rules are shared with the native project (client-agnostic)
 — never switch this project to test-mode rules.
+
