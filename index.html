@@ -13,22 +13,25 @@
 <link rel="manifest" href="manifest.webmanifest">
 <title>Med100</title>
 <style>
-  :root { --brand: #0B6E4F; --brand-light: #E6F3EE; }
+  :root { --brand: #0B6E4F; --brand-light: #E6F3EE; --danger: #a33; }
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    background: var(--brand);
+    background: #F4F6F5;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: #1a1a1a;
   }
+  .hidden { display: none !important; }
+
+  /* Full-screen centered states: loading, login */
   .screen {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 24px;
+    background: var(--brand);
   }
-  .hidden { display: none !important; }
   .card {
     width: 100%;
     max-width: 400px;
@@ -42,18 +45,16 @@
   h1 { margin: 0 0 4px; font-size: 28px; color: var(--brand); }
   p.tagline { margin: 0 0 32px; color: #555; }
   button {
-    width: 100%;
     padding: 14px;
     border-radius: 10px;
     border: none;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    margin-bottom: 12px;
   }
-  .btn-primary { background: var(--brand); color: #fff; }
-  .btn-outline { background: #fff; color: var(--brand); border: 2px solid var(--brand); }
-  .btn-text { background: transparent; color: #888; font-weight: 400; margin-bottom: 0; }
+  .btn-primary { width: 100%; background: var(--brand); color: #fff; margin-bottom: 12px; }
+  .btn-outline { width: 100%; background: #fff; color: var(--brand); border: 2px solid var(--brand); margin-bottom: 12px; }
+  .btn-text { width: 100%; background: transparent; color: #888; font-weight: 400; }
   #loading {
     position: fixed; inset: 0;
     display: flex; align-items: center; justify-content: center;
@@ -67,17 +68,85 @@
     animation: spin 0.8s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .ring-wrap { position: relative; width: 220px; height: 220px; margin: 0 auto 24px; }
+  #error-banner, .error-banner {
+    background: #fdeaea; color: var(--danger); padding: 10px 14px; border-radius: 8px;
+    font-size: 14px; margin-bottom: 16px; text-align: left;
+  }
+
+  /* App shell (post-login) */
+  #app-screen { display: none; min-height: 100vh; flex-direction: column; }
+  #app-screen.active { display: flex; }
+  .app-header {
+    background: var(--brand); color: #fff; padding: 20px 20px 16px;
+    font-size: 20px; font-weight: 700;
+  }
+  #tab-content { flex: 1; padding: 20px; padding-bottom: 90px; max-width: 480px; margin: 0 auto; width: 100%; }
+  .bottom-nav {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    display: flex; background: #fff; border-top: 1px solid #e2e2e2;
+    padding: 6px 0 calc(6px + env(safe-area-inset-bottom, 0px));
+  }
+  .nav-btn {
+    flex: 1; background: none; border: none; padding: 8px 2px;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    font-size: 11px; color: #888; cursor: pointer;
+  }
+  .nav-btn .icon { font-size: 20px; }
+  .nav-btn.active { color: var(--brand); font-weight: 700; }
+
+  /* Home tab */
+  .ring-wrap { position: relative; width: 220px; height: 220px; margin: 12px auto 24px; }
   .ring-wrap svg { transform: rotate(-90deg); }
   .ring-track { fill: none; stroke: #e5e5e5; stroke-width: 14; }
   .ring-progress { fill: none; stroke: var(--brand); stroke-width: 14; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
   .ring-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .ring-text .days { font-size: 32px; font-weight: 700; color: var(--brand); }
   .ring-text .label { font-size: 13px; color: #777; }
-  #error-banner {
-    background: #fdeaea; color: #a33; padding: 10px 14px; border-radius: 8px;
-    font-size: 14px; margin-bottom: 16px; text-align: left;
+  .panel {
+    background: #fff; border-radius: 14px; padding: 20px; margin-bottom: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center;
   }
+
+  /* Topics tab */
+  .topic-card {
+    background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .topic-card.done { opacity: 0.55; }
+  .topic-day {
+    width: 40px; height: 40px; border-radius: 50%; background: var(--brand-light); color: var(--brand);
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0;
+  }
+  .topic-day.done { background: var(--brand); color: #fff; }
+  .topic-title { font-weight: 600; font-size: 15px; }
+  .topic-system { font-size: 12px; color: #888; }
+
+  /* Progress tab */
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .stat-box { background: #fff; border-radius: 12px; padding: 18px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .stat-box .value { font-size: 28px; font-weight: 700; color: var(--brand); }
+  .stat-box .label { font-size: 12px; color: #888; margin-top: 4px; }
+
+  /* Notes tab */
+  .note-input-row { display: flex; gap: 8px; margin-bottom: 16px; }
+  .note-input-row textarea {
+    flex: 1; border: 1px solid #ddd; border-radius: 10px; padding: 10px; font-size: 14px;
+    font-family: inherit; resize: none; min-height: 44px;
+  }
+  .note-input-row button { white-space: nowrap; background: var(--brand); color: #fff; }
+  .note-card {
+    background: #fff; border-radius: 12px; padding: 14px; margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    display: flex; justify-content: space-between; gap: 10px; align-items: flex-start;
+  }
+  .note-card .note-text { font-size: 14px; white-space: pre-wrap; word-break: break-word; }
+  .note-card .note-date { font-size: 11px; color: #999; margin-top: 4px; }
+  .note-delete { background: none; border: none; color: #c33; font-size: 18px; cursor: pointer; padding: 0 4px; }
+  .empty-state { text-align: center; color: #999; padding: 40px 10px; font-size: 14px; }
+
+  /* Profile tab */
+  .profile-row { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid #eee; font-size: 14px; }
+  .profile-row .k { color: #888; }
 </style>
 </head>
 <body>
@@ -98,21 +167,16 @@
   </div>
 </div>
 
-<div id="challenge-screen" class="screen hidden">
-  <div class="card">
-    <div class="ring-wrap">
-      <svg width="220" height="220" viewBox="0 0 220 220">
-        <circle class="ring-track" cx="110" cy="110" r="96"></circle>
-        <circle id="ring-progress" class="ring-progress" cx="110" cy="110" r="96"></circle>
-      </svg>
-      <div class="ring-text">
-        <span id="days-done" class="days">0/100</span>
-        <span class="label">days completed</span>
-      </div>
-    </div>
-    <button id="btn-done" class="btn-primary">Mark Today as Done</button>
-    <button id="btn-signout" class="btn-text">Sign out</button>
-  </div>
+<div id="app-screen">
+  <div class="app-header" id="tab-title">Home</div>
+  <div id="tab-content"></div>
+  <nav class="bottom-nav">
+    <button class="nav-btn" data-tab="home"><span class="icon">🏠</span>Home</button>
+    <button class="nav-btn" data-tab="topics"><span class="icon">📚</span>Topics</button>
+    <button class="nav-btn" data-tab="progress"><span class="icon">📈</span>Progress</button>
+    <button class="nav-btn" data-tab="notes"><span class="icon">📝</span>Notes</button>
+    <button class="nav-btn" data-tab="profile"><span class="icon">👤</span>Profile</button>
+  </nav>
 </div>
 
 <script type="module" src="app.js"></script>
