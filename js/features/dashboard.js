@@ -59,7 +59,7 @@ function journeySection(total, nextDay) {
           <circle class="ring-track" cx="90" cy="90" r="${radius}"></circle>
           <circle class="ring-fill" cx="90" cy="90" r="${radius}" style="stroke-dasharray:${circumference};stroke-dashoffset:${offset}"></circle>
         </svg>
-        <div class="ring-center"><span class="big">${Math.min(nextDay, TOTAL_DAYS)}</span><span class="small">of 100 days</span></div>
+        <div class="ring-center"><span class="big">${total}</span><span class="small">days completed</span></div>
       </div>
       <p style="margin-top:14px;font-weight:700;color:var(--color-gold)">${pct}% completed</p>
       <p style="color:var(--color-text-secondary);font-size:var(--fs-sm)">${TOTAL_DAYS-total} days remaining</p>
@@ -67,10 +67,12 @@ function journeySection(total, nextDay) {
 }
 
 function momentumSection(current) {
-  const sessionsCompleted = state.quizAttempts.length + state.teachingSessions.length;
+  const questionsAnswered = state.quizAttempts.length;
+  const teachingSessions = state.teachingSessions.length;
   return `<div class="card"><div class="card-title">Learning Momentum</div><div class="stat-grid">
-    <div class="stat-tile"><div class="value">${current}</div><div class="label">Day streak</div></div>
-    <div class="stat-tile"><div class="value">${sessionsCompleted}</div><div class="label">Sessions completed</div></div>
+    <div class="stat-tile"><div class="value">${current}</div><div class="label">Consecutive study days</div></div>
+    <div class="stat-tile"><div class="value">${questionsAnswered}</div><div class="label">Questions answered</div></div>
+    <div class="stat-tile"><div class="value">${teachingSessions}</div><div class="label">Teaching sessions</div></div>
   </div><p style="color:var(--color-text-secondary);font-size:var(--fs-sm);margin-top:12px">Last active: ${esc(relativeDay(state.lastActionDate))} — ${esc(streakMessage(current))}</p></div>`;
 }
 
@@ -95,10 +97,20 @@ function quickAccessSection(nextDay) {
   return `<div class="card"><div class="card-title">Your Workspace</div><div class="quick-grid">${items.map(it=>`<button data-quick="${it.route}" class="quick-tile"><span class="quick-tile-icon">${icon(it.icon)}</span><span class="quick-tile-label">${esc(it.label)}</span></button>`).join('')}</div></div>`;
 }
 
+function timestampMillis(value) {
+  if (typeof value === 'number') return value;
+  if (value && typeof value.toMillis === 'function') return value.toMillis();
+  if (value && typeof value.seconds === 'number') return value.seconds * 1000;
+  return 0;
+}
+
 function recentActivitySection() {
-  const activities=[...state.quizAttempts.map(a=>({time:a.answeredAt,topicId:a.topicId,label:`Answered a question — ${a.isCorrect?'correct':'incorrect'}`})),...state.teachingSessions.map(s=>({time:s.completedAt,topicId:s.topicId,label:`Taught back "${s.topicTitle}" — scored ${s.masteryScore}`}))].filter(a=>typeof a.time==='number').sort((a,b)=>b.time-a.time).slice(0,5);
-  if(!activities.length)return '';
-  return `<div class="card"><div class="card-title">Recent Activity</div>${activities.map(a=>`<button data-activity-topic="${esc(a.topicId)}" class="row" style="width:100%;text-align:left;margin-bottom:6px"><div class="row-main"><div class="row-title">${esc(a.label)}</div><div class="row-sub">${esc(relativeTime(a.time))}</div></div><span aria-hidden="true">↗</span></button>`).join('')}</div>`;
+  const activities = [
+    ...state.quizAttempts.map(a => ({ time: timestampMillis(a.answeredAt), topicId: a.topicId, label: `Answered a question — ${a.isCorrect ? 'correct' : 'incorrect'}` })),
+    ...state.teachingSessions.map(s => ({ time: timestampMillis(s.completedAt), topicId: s.topicId, label: `Taught back "${s.topicTitle}" — scored ${s.masteryScore}` })),
+  ].filter(a => a.time > 0).sort((a, b) => b.time - a.time).slice(0, 5);
+  if (!activities.length) return '';
+  return `<div class="card"><div class="card-title">Recent Activity</div>${activities.map(a => `<button data-activity-topic="${esc(a.topicId)}" class="row" style="width:100%;text-align:left;margin-bottom:6px"><div class="row-main"><div class="row-title">${esc(a.label)}</div><div class="row-sub">${esc(relativeTime(a.time))}</div></div><span aria-hidden="true">↗</span></button>`).join('')}</div>`;
 }
 
 function template() {
