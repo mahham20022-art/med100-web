@@ -20,18 +20,44 @@ function template() {
   const { total } = computeStreaks(state.completedDays);
   const nextDay = Math.min(total + 1, TOTAL_DAYS);
 
-  const rows = CURRICULUM.map((d) => {
-    const isDone = state.completedDays.includes(d.day);
-    const isCurrent = d.day === nextDay && !isDone;
-    const isFuture = d.day > nextDay;
+  const phases = [
+    { name: 'Foundation', range: [1, 20], note: 'Build the essential clinical framework.' },
+    { name: 'Development', range: [21, 40], note: 'Strengthen core knowledge and patterns.' },
+    { name: 'Integration', range: [41, 60], note: 'Connect concepts across disciplines.' },
+    { name: 'Mastery', range: [61, 80], note: 'Refine recall and clinical reasoning.' },
+    { name: 'Final Challenge', range: [81, 100], note: 'Consolidate the full journey.' },
+  ];
+  const phaseMarkup = phases.map((phase, index) => {
+    const [first, last] = phase.range;
+    const days = CURRICULUM.filter(d => d.day >= first && d.day <= last);
+    const done = days.filter(d => state.completedDays.includes(d.day)).length;
+    const isCurrent = nextDay >= first && nextDay <= last;
+    const isOpen = isCurrent || (total === 0 && index === 0);
+    const dayRows = days.map(d => {
+      const isDone = state.completedDays.includes(d.day);
+      const isToday = d.day === nextDay && !isDone;
+      const isFuture = d.day > nextDay;
+      return `
+        <button class="row challenge-day ${isFuture ? 'muted' : ''}" data-day="${d.day}" ${isFuture ? 'disabled' : ''} style="width:100%;text-align:left;">
+          <span class="row-badge ${isDone ? 'done' : ''}">${isDone ? '✓' : String(d.day).padStart(2,'0')}</span>
+          <span class="row-main">
+            <span class="row-title">${esc(d.title)}${isToday ? ' <span class="pill pill-gold">Next</span>' : ''}</span>
+            <span class="row-sub">Day ${d.day} · ${esc(d.system)}</span>
+          </span>
+          <span class="challenge-day-status">${isDone ? 'Complete' : d.comingSoon ? 'Planned' : isToday ? 'Up next' : 'Locked'}</span>
+        </button>`;
+    }).join('');
     return `
-      <button class="row ${isFuture ? 'muted' : ''}" data-day="${d.day}" style="width:100%;text-align:left;${isFuture ? 'pointer-events:none;' : ''}">
-        <div class="row-badge ${isDone ? 'done' : ''}">${isDone ? '✓' : d.day}</div>
-        <div class="row-main">
-          <div class="row-title">${esc(d.title)}${isCurrent ? ' <span class=\"pill pill-gold\">Today</span>' : ''}</div>
-          <div class="row-sub">Day ${d.day} · ${esc(d.system)}</div>
-        </div>
-      </button>`;
+      <details class="challenge-phase" ${isOpen ? 'open' : ''}>
+        <summary class="challenge-phase-summary">
+          <span class="challenge-phase-number">0${index + 1}</span>
+          <span class="challenge-phase-copy"><strong>${phase.name}</strong><small>${phase.note}</small></span>
+          <span class="challenge-phase-count">${done}/20</span>
+          <span class="challenge-phase-chevron" aria-hidden="true">＋</span>
+        </summary>
+        <div class="challenge-phase-progress"><span style="width:${done / 20 * 100}%"></span></div>
+        <div class="challenge-phase-days">${dayRows}</div>
+      </details>`;
   }).join('');
 
   return `
@@ -47,7 +73,7 @@ function template() {
       </div>
       ${total < TOTAL_DAYS ? `<button id="btn-mark-done" class="btn btn-primary" style="width:auto;">Mark Today as Done</button>` : ''}
     </div>
-    ${rows}
+    ${phaseMarkup}
   `;
 }
 
