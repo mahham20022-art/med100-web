@@ -1,0 +1,85 @@
+/* Med100 V4 — deliberate editorial art direction.
+   No stock imagery, generated-photo decoration, glass effects or template gradients. */
+:root{
+  --color-bg:#F3F1EB;
+  --color-surface:#FBFAF7;
+  --color-surface-alt:#EAE7DE;
+  --color-brand:#142A3A;
+  --color-brand-dark:#0C1D29;
+  --color-gold:#A77C3D;
+  --color-gold-soft:#EFE6D5;
+  --color-text:#182A35;
+  --color-text-secondary:#68747A;
+  --color-border:#DCD8CE;
+  --radius-sm:5px;--radius-md:8px;--radius-lg:10px;--radius-xl:14px;
+  --shadow-sm:0 1px 2px rgba(22,36,43,.035);
+  --shadow-md:0 8px 22px rgba(22,36,43,.055);
+  --shadow-lg:0 18px 44px rgba(22,36,43,.08);
+}
+body{background:var(--color-bg);color:var(--color-text);letter-spacing:-.012em}
+button,input,textarea,select{font:inherit}
+.app-header{background:#F8F7F2;color:var(--color-brand);border-bottom:1px solid var(--color-border);box-shadow:none}
+.app-header h1{color:var(--color-brand);font-family:var(--font-serif);font-weight:700;letter-spacing:-.055em;font-size:22px}
+.brand-lockup{gap:11px}
+.brand-mark{width:31px;height:31px;padding:5px;border:1px solid var(--color-gold);border-radius:50%}
+#profile-btn{border-color:var(--color-border);color:var(--color-brand);background:transparent}
+#view-root{padding-top:34px}
+.bottom-nav{background:#F8F7F2;border-color:var(--color-border)}
+.nav-btn{border-radius:6px}
+.nav-btn[aria-current=page]{background:#EAE7DE;color:var(--color-brand)}
+.card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:8px;box-shadow:none;padding:24px;margin-bottom:16px}
+@media(hover:hover){.card:hover{box-shadow:var(--shadow-sm);border-color:#C9C1B2}}
+.card-title{font-size:10px;letter-spacing:.16em;color:#88734F;font-weight:800}
+.card-mission{background:#142A3A;color:#F8F7F2;border:0;border-radius:8px;box-shadow:none;position:relative;overflow:hidden}
+.card-mission:after{content:"100";position:absolute;right:20px;bottom:-38px;font-family:var(--font-serif);font-size:156px;line-height:1;color:rgba(255,255,255,.045);font-weight:700;pointer-events:none}
+.card-mission>*{position:relative;z-index:1}
+.card-mission .card-title{color:#D2B27A}
+.card-mission h3,.card-mission p{color:#F8F7F2}
+.card-mission .pill{background:rgba(255,255,255,.12);color:#F8F7F2;border:1px solid rgba(255,255,255,.14)}
+.btn-primary{background:#B28B51;color:#101F29;border:1px solid #B28B51;border-radius:5px;box-shadow:none}
+.btn-primary:hover{background:#C29A5D;box-shadow:none;transform:translateY(-1px)}
+.btn-outline{border-radius:5px;background:transparent;border-color:#B9B3A7}
+.stat-tile{background:transparent;border:0;border-top:1px solid var(--color-border);border-radius:0;padding:14px 4px;text-align:left}
+.stat-tile .value{font-family:var(--font-serif);font-size:34px;font-weight:600;letter-spacing:-.055em}
+.stat-tile .label{font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+.row{border-radius:6px;background:transparent;border-color:var(--color-border)}
+.row-badge{border-radius:5px;background:#EAE7DE}
+.quick-tile{border-radius:5px}
+.quick-tile-icon{background:transparent;border:1px solid var(--color-border);border-radius:6px;color:var(--color-brand)}
+.quick-tile-label{font-size:10px;letter-spacing:.04em;text-transform:uppercase}
+.page-heading h2,#view-root>h2{font-family:var(--font-serif);font-weight:600;letter-spacing:-.055em}
+.page-eyebrow{color:#967344;letter-spacing:.18em}
+.pill{border-radius:4px}
+.ring-fill{stroke:var(--color-gold)}
+.score-bar-fill{background:var(--color-brand)}
+.dashboard-welcome{position:relative;border-bottom:1px solid var(--color-border);padding:2px 0 25px;margin-bottom:22px}
+.dashboard-welcome .intro-kicker{font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:800;color:#947448;margin:0 0 10px}
+.dashboard-welcome h2{font-family:var(--font-serif);font-size:clamp(34px,4.2vw,56px);font-weight:500;line-height:1.04;letter-spacing:-.06em;color:var(--color-brand);margin:0}
+.dashboard-welcome .intro-date{font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--color-text-secondary);margin:0 0 9px}
+.dashboard-welcome .intro-subtitle{font-size:14px;color:var(--color-text-secondary);margin:10px 0 0}
+.dashboard-journey .card{text-align:left!important}
+.dashboard-journey .card-title{margin-bottom:14px}
+.dashboard-journey .ring{margin:0 auto}
+.dashboard-journey .ring-center .big{font-family:var(--font-serif);font-weight:500}
+.dashboard-journey .ring-center .small{letter-spacing:.1em;text-transform:uppercase;font-size:10px}
+.dashboard-journey .card>p:last-child{font-size:11px;letter-spacing:.06em}
+.dashboard-view{gap:0}
+@media(min-width:760px){
+ body{background:#F3F1EB}
+ .app-header{padding-left:32px}
+ .bottom-nav{background:#F8F7F2}
+ #view-root{padding:44px clamp(30px,4.2vw,76px) 72px}
+ .dashboard-view{column-gap:22px}
+ .dashboard-mission .card{min-height:250px;padding:30px}
+ .dashboard-journey .card{min-height:250px;padding:26px 28px}
+ .dashboard-welcome{padding-bottom:28px;margin-bottom:26px}
+}
+@media(min-width:1280px){.dashboard-view{column-gap:26px}}
+@media(max-width:759px){
+ #view-root{padding-top:24px}
+ .dashboard-welcome{padding-bottom:20px;margin-bottom:16px}
+ .card{padding:19px}
+}
+@media(prefers-reduced-motion:no-preference){
+ .btn,.quick-tile-icon,.nav-btn{transition:background .18s ease,border-color .18s ease,transform .18s ease}
+}
