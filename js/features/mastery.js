@@ -1,9 +1,9 @@
-// "AI Mastery Mode" — the question-and-feedback experience. No AI
+// "Mastery Mode" — the question-and-feedback experience. No AI
 // backend exists yet (would need a secure server-side endpoint, not a
 // frontend API key — never put one there); this release uses the
 // curated local question bank in data/questions.js, which is real and
 // functional, just not AI-generated. The integration boundary for a
-// real AI-generated question stream later is this module's
+// real future generated question stream later is this module's
 // `getQuestionsForTopic()` call — swapping that for a server call
 // later doesn't change anything else here.
 import { getDay } from '../data/curriculum.js';
@@ -94,8 +94,8 @@ function pageHeading(day) {
   return `
     <div class="page-heading">
       <span class="page-eyebrow">ACTIVE RECALL · DAY ${day?.day ?? ''}</span>
-      <h2>Mastery mode</h2>
-      <p>${esc(day?.title || 'Topic questions')} — test understanding, then review the explanation.</p>
+      <h2>Question practice</h2>
+      <p>${esc(day?.title || 'Topic questions')} — Answer curated questions, then review the explanation.</p>
     </div>
   `;
 }
