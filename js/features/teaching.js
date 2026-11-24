@@ -23,6 +23,7 @@ export function renderTeaching(root, dayParam) {
 
   let recognizer = null;
   let listening = false;
+  let inputMode = 'written';
 
   function paint() {
     root.innerHTML = inputTemplate(day);
@@ -45,6 +46,7 @@ export function renderTeaching(root, dayParam) {
         recognizer.continuous = true;
         recognizer.interimResults = false;
         recognizer.onresult = (event) => {
+          inputMode = 'voice';
           let transcript = '';
           for (let i = event.resultIndex; i < event.results.length; i++) {
             transcript += event.results[i][0].transcript;
@@ -97,7 +99,8 @@ export function renderTeaching(root, dayParam) {
     sliders.forEach((s) => s.addEventListener('input', updateOverall));
     updateOverall();
 
-    root.querySelector('#btn-submit-assessment').addEventListener('click', async () => {
+    const saveButton = root.querySelector('#btn-submit-assessment');
+    saveButton.addEventListener('click', async () => {
       const scores = {};
       sliders.forEach((s) => (scores[s.dataset.dimension] = Number(s.value)));
       const missingConcepts = root.querySelector('#missing-concepts').value
@@ -108,25 +111,38 @@ export function renderTeaching(root, dayParam) {
         Object.values(scores).reduce((a, b) => a + b, 0) / Object.values(scores).length,
       );
 
-      if (state.user) {
-        try {
-          await submitTeachingSession(state.user.uid, {
-            topicId: day.topicId,
-            topicTitle: day.title,
-            mode: SpeechRecognitionCtor ? 'voice' : 'written',
-            explanationText,
-            accuracyScore: scores.accuracy,
-            clinicalReasoningScore: scores.clinicalReasoning,
-            completenessScore: scores.completeness,
-            confidenceScore: scores.confidence,
-            missingConceptsJson: JSON.stringify(missingConcepts),
-            hallucinationsJson: JSON.stringify([]),
-            feedback: 'Self-assessed (no AI evaluation backend configured yet).',
-            masteryScore: overall,
-          });
-        } catch (error) {
-          console.error('Failed to submit teaching session:', error);
-        }
+      if (!state.user) {
+        const error = root.querySelector('#assessment-error');
+        error.textContent = 'Your session is not signed in. Sign in and try saving again.';
+        error.classList.remove('hidden');
+        return;
+      }
+
+      saveButton.disabled = true;
+      saveButton.textContent = 'Saving…';
+      try {
+        await submitTeachingSession(state.user.uid, {
+          topicId: day.topicId,
+          topicTitle: day.title,
+          mode: inputMode,
+          explanationText,
+          accuracyScore: scores.accuracy,
+          clinicalReasoningScore: scores.clinicalReasoning,
+          completenessScore: scores.completeness,
+          confidenceScore: scores.confidence,
+          missingConceptsJson: JSON.stringify(missingConcepts),
+          hallucinationsJson: JSON.stringify([]),
+          feedback: 'Self-assessed (no AI evaluation backend configured yet).',
+          masteryScore: overall,
+        });
+      } catch (error) {
+        console.error('Failed to submit teaching session:', error);
+        const message = root.querySelector('#assessment-error');
+        message.textContent = 'We could not save this session. Check your connection and try again.';
+        message.classList.remove('hidden');
+        saveButton.disabled = false;
+        saveButton.textContent = 'Try Saving Again';
+        return;
       }
 
       root.innerHTML = `
@@ -203,6 +219,7 @@ function assessmentTemplate(day) {
       <textarea id="missing-concepts" class="input" rows="3" placeholder="One per line…"></textarea>
     </div>
 
+    <div id="assessment-error" class="error-banner hidden" role="alert"></div>
     <button id="btn-submit-assessment" class="btn btn-primary">Save Mastery Score</button>
   `;
 }
