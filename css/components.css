@@ -90,3 +90,12 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 .quick-tile-icon svg{width:21px;height:21px}
 .quick-tile:active .quick-tile-icon{transform:scale(.94)}
 .quick-tile-label{font-size:11px;color:var(--color-text-secondary);font-weight:700}
+
+/* Consistent page introductions across the learning workspace. */
+.page-heading{margin:0 0 22px;padding:2px 0 4px}
+.page-eyebrow{display:block;color:var(--color-gold);font-size:10px;font-weight:800;letter-spacing:.14em;margin-bottom:8px}
+.page-heading h2{font-family:var(--font-serif);font-size:clamp(27px,3vw,38px);font-weight:600;letter-spacing:-.035em;color:var(--color-brand);margin:0}
+.page-heading p{margin-top:7px;color:var(--color-text-secondary);font-size:var(--fs-sm);max-width:620px;line-height:1.65}
+#topic-search,#system-filter{min-height:48px;border:1px solid var(--color-border);border-radius:12px;background:#fff;padding:0 14px;color:var(--color-text)}
+#topic-search:focus,#system-filter:focus{outline:3px solid rgba(184,148,78,.2);border-color:var(--color-gold)}
+@media(min-width:760px){.page-heading{margin-bottom:28px}.page-heading p{font-size:15px}}
