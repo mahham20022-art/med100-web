@@ -78,3 +78,29 @@
   :root{--sidebar-width:264px}
   #view-root{padding-top:48px}
 }
+
+/* Dashboard composition: generous editorial grid on wide screens. */
+.dashboard-view{display:flex;flex-direction:column;gap:2px;min-width:0}
+.dashboard-view>section{min-width:0}
+.dashboard-welcome{margin-bottom:8px}
+.dashboard-welcome h2{font-family:var(--font-serif);font-size:clamp(26px,3vw,38px);font-weight:600;letter-spacing:-.035em}
+.dashboard-welcome p:last-child{margin-top:4px}
+.dashboard-view .card{height:calc(100% - 18px)}
+.dashboard-due:empty,.dashboard-performance:empty,.dashboard-recent:empty{display:none}
+@media(min-width:760px){
+  .dashboard-view{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:0 20px;align-items:stretch}
+  .dashboard-welcome{grid-column:1/-1;margin-bottom:14px;padding-bottom:6px}
+  .dashboard-mission{grid-column:span 7}
+  .dashboard-journey{grid-column:span 5}
+  .dashboard-momentum{grid-column:span 6}
+  .dashboard-due{grid-column:span 6}
+  .dashboard-performance{grid-column:span 6}
+  .dashboard-quick{grid-column:span 6}
+  .dashboard-recent{grid-column:1/-1}
+  .dashboard-view>section>.card{height:calc(100% - 18px)}
+}
+@media(min-width:1280px){
+  .dashboard-view{column-gap:24px}
+  .dashboard-mission{grid-column:span 8}
+  .dashboard-journey{grid-column:span 4}
+}
