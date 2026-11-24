@@ -5,6 +5,11 @@ export function renderProfile(root, { onSignOut }) {
   const user = state.user;
   const isGuest = user?.isAnonymous;
   root.innerHTML = `
+    <div class="page-heading">
+      <span class="page-eyebrow">ACCOUNT</span>
+      <h2>Your profile</h2>
+      <p>Manage your Med100 account and learning identity.</p>
+    </div>
     <div class="card">
       <div class="profile-row"><span style="color:var(--color-text-secondary);">Account</span><span>${isGuest ? 'Guest' : esc(user?.email || '—')}</span></div>
       <div class="profile-row"><span style="color:var(--color-text-secondary);">User ID</span><span style="font-size:var(--fs-xs);color:var(--color-text-secondary);">${esc(user?.uid || '')}</span></div>
