@@ -133,7 +133,7 @@ function detailTemplate(day) {
       <ul>${day.clinicalPearls.map((p) => `<li style="margin-bottom:var(--sp-2);">★ ${esc(p)}</li>`).join('')}</ul>
     </div>
 
-    <button id="btn-mastery" class="btn btn-outline" style="margin-bottom:var(--sp-2);">Test Yourself — AI Mastery Mode</button>
+    <button id="btn-mastery" class="btn btn-outline" style="margin-bottom:var(--sp-2);">Test Yourself — Question Practice</button>
     <button id="btn-teach" class="btn btn-outline" style="margin-bottom:var(--sp-4);">Teach It Back — Teaching Mode</button>
 
     ${
