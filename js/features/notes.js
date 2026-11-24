@@ -53,6 +53,11 @@ function template() {
     : `<div class="empty-state">No notes yet — write your first one below.</div>`;
 
   return `
+    <div class="page-heading">
+      <span class="page-eyebrow">YOUR KNOWLEDGE SPACE</span>
+      <h2>Notes</h2>
+      <p>Capture the details worth coming back to.</p>
+    </div>
     <div class="card">
       <textarea id="note-input" class="input" rows="3" placeholder="Write a note…" style="margin-bottom:var(--sp-3);"></textarea>
       <button id="btn-add-note" class="btn btn-primary">Add Note</button>
