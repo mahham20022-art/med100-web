@@ -65,6 +65,11 @@ function listTemplate(systems, systemFilter) {
     .join('');
 
   return `
+    <div class="page-heading">
+      <span class="page-eyebrow">THE LIBRARY</span>
+      <h2>Explore medicine</h2>
+      <p>A structured curriculum across the core clinical disciplines.</p>
+    </div>
     <input id="topic-search" class="input" type="search" placeholder="Search topics…" style="margin-bottom:var(--sp-3);">
     <select id="system-filter" class="input" style="margin-bottom:var(--sp-4);">${options}</select>
     ${rows}
