@@ -23,16 +23,16 @@ export function renderMastery(root, dayParam) {
 
   function paint() {
     if (!day || questions.length === 0) {
-      root.innerHTML = `<div class="empty-state">No questions available for this topic yet.</div>`;
+      root.innerHTML = pageHeading(day) + `<div class="empty-state">No questions available for this topic yet.</div>`;
       return;
     }
     if (index >= questions.length) {
-      root.innerHTML = summaryTemplate(day, correctCount, questions.length, missed);
+      root.innerHTML = pageHeading(day) + summaryTemplate(day, correctCount, questions.length, missed);
       wireSummary();
       return;
     }
     const q = questions[index];
-    root.innerHTML = questionTemplate(q, index, questions.length);
+    root.innerHTML = pageHeading(day) + questionTemplate(q, index, questions.length);
     wireQuestion(q);
   }
 
@@ -88,6 +88,16 @@ export function renderMastery(root, dayParam) {
   }
 
   paint();
+}
+
+function pageHeading(day) {
+  return `
+    <div class="page-heading">
+      <span class="page-eyebrow">ACTIVE RECALL · DAY ${day?.day ?? ''}</span>
+      <h2>Mastery mode</h2>
+      <p>${esc(day?.title || 'Topic questions')} — test understanding, then review the explanation.</p>
+    </div>
+  `;
 }
 
 function questionTemplate(q, index, totalCount) {
