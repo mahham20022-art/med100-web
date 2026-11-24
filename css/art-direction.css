@@ -177,3 +177,5 @@ button,input,textarea,select{font:inherit}
  .challenge-phase-days{padding:3px 12px 10px}
  .challenge-day-status{font-size:8px}
 }
+
+.challenge-content-pending{font-size:11px;letter-spacing:.04em;color:var(--color-text-secondary);text-align:right;max-width:140px;line-height:1.5}
