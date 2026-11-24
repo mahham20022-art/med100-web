@@ -496,3 +496,7 @@ export const CURRICULUM = Array.from({ length: 100 }, (_, i) => {
 export function getDay(day) {
   return CURRICULUM.find((d) => d.day === Number(day));
 }
+
+export function getDayByTopicId(topicId) {
+  return CURRICULUM.find((d) => d.topicId === topicId);
+}

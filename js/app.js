@@ -1,6 +1,12 @@
 import { initFirebase } from './core/firebase.js';
 import { onAuthChange, signInWithGoogle, signInAsGuest, signOutUser } from './core/auth.js';
-import { subscribeChallengeProgress, subscribeNotes, subscribeFlashcardSchedule } from './core/sync.js';
+import {
+  subscribeChallengeProgress,
+  subscribeNotes,
+  subscribeFlashcardSchedule,
+  subscribeQuizAttempts,
+  subscribeTeachingSessions,
+} from './core/sync.js';
 import { state, setState } from './state.js';
 import { route, notFound, startRouter, navigate, currentRoutePath } from './router.js';
 
@@ -44,13 +50,17 @@ function clearAuthError() {
 let unsubProgress = null;
 let unsubNotes = null;
 let unsubFlashcards = null;
+let unsubQuizAttempts = null;
+let unsubTeachingSessions = null;
 let routerStarted = false;
 
 function teardownSubscriptions() {
   if (unsubProgress) unsubProgress();
   if (unsubNotes) unsubNotes();
   if (unsubFlashcards) unsubFlashcards();
-  unsubProgress = unsubNotes = unsubFlashcards = null;
+  if (unsubQuizAttempts) unsubQuizAttempts();
+  if (unsubTeachingSessions) unsubTeachingSessions();
+  unsubProgress = unsubNotes = unsubFlashcards = unsubQuizAttempts = unsubTeachingSessions = null;
 }
 
 function setupSubscriptions(uid) {
@@ -68,6 +78,16 @@ function setupSubscriptions(uid) {
     uid,
     (flashcardSchedule) => setState({ flashcardSchedule }),
     (error) => console.error('[sync] flashcardSchedule listener failed:', error),
+  );
+  unsubQuizAttempts = subscribeQuizAttempts(
+    uid,
+    (quizAttempts) => setState({ quizAttempts }),
+    (error) => console.error('[sync] quizAttempts listener failed:', error),
+  );
+  unsubTeachingSessions = subscribeTeachingSessions(
+    uid,
+    (teachingSessions) => setState({ teachingSessions }),
+    (error) => console.error('[sync] teachingSessions listener failed:', error),
   );
 }
 
@@ -162,7 +182,15 @@ async function main() {
 
   onAuthChange((user) => {
     teardownSubscriptions();
-    setState({ user, authReady: true, completedDays: [], notes: [], flashcardSchedule: [] });
+    setState({
+      user,
+      authReady: true,
+      completedDays: [],
+      notes: [],
+      flashcardSchedule: [],
+      quizAttempts: [],
+      teachingSessions: [],
+    });
 
     if (user) {
       setupSubscriptions(user.uid);

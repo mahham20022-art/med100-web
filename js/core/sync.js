@@ -17,6 +17,17 @@ function store() {
   return getSdk().store;
 }
 
+// Firestore timestamps are Timestamp objects with .toMillis() in the
+// real SDK; this app's test mock returns a plain number from
+// serverTimestamp() instead. Normalize both to a plain ms number so
+// feature code never has to care which one it got.
+export function toMillis(value) {
+  if (value == null) return null;
+  if (typeof value === 'number') return value;
+  if (typeof value.toMillis === 'function') return value.toMillis();
+  return null;
+}
+
 // --- Challenge progress (users/{uid}/challengeProgress/state) ---------
 
 export function subscribeChallengeProgress(uid, onChange, onError) {
@@ -30,6 +41,7 @@ export function subscribeChallengeProgress(uid, onChange, onError) {
         completedDays: Array.isArray(data.completedDays) ? data.completedDays : [],
         skippedDays: Array.isArray(data.skippedDays) ? data.skippedDays : [],
         hasStartedAt: !!data.startedAt,
+        lastActionDate: toMillis(data.lastActionDate),
       });
     },
     onError,
@@ -112,6 +124,21 @@ export async function submitQuizAttempt(uid, attempt) {
   });
 }
 
+// Read-side for Dashboard V2.0's Performance Snapshot — Rules allow
+// read for the owner (just not update/delete), so this is a real,
+// permitted read, not a workaround. Capped to the most recent 200 so a
+// long-term user's dashboard doesn't have to pull an ever-growing
+// collection.
+export function subscribeQuizAttempts(uid, onChange, onError) {
+  const s = store();
+  const q = s.query(
+    s.collection(getDb(), 'users', uid, 'quizAttempts'),
+    s.orderBy('answeredAt', 'desc'),
+    s.limit(200),
+  );
+  return s.onSnapshot(q, (snap) => onChange(snap.docs.map((d) => ({ id: d.id, ...d.data() }))), onError);
+}
+
 // --- Teaching sessions (users/{uid}/teachingSessions/{id}) ------------
 // Append-only, same field shape the native app writes (see
 // TeachingSessions Drift table / teaching_remote_datasource), so a
@@ -123,4 +150,15 @@ export async function submitTeachingSession(uid, session) {
     ...session,
     completedAt: s.serverTimestamp(),
   });
+}
+
+// Read-side for Dashboard V2.0's Recent Activity feed.
+export function subscribeTeachingSessions(uid, onChange, onError) {
+  const s = store();
+  const q = s.query(
+    s.collection(getDb(), 'users', uid, 'teachingSessions'),
+    s.orderBy('completedAt', 'desc'),
+    s.limit(20),
+  );
+  return s.onSnapshot(q, (snap) => onChange(snap.docs.map((d) => ({ id: d.id, ...d.data() }))), onError);
 }
