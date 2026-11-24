@@ -150,3 +150,30 @@ button,input,textarea,select{font:inherit}
  .dashboard-momentum .stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(prefers-reduced-motion:reduce){.card,.btn,.row,.quick-tile-icon{transition:none!important}}
+
+
+/* The Challenge is a five-part curriculum, not a flat list of 100 rows. */
+.challenge-phase{background:var(--color-surface);border:1px solid var(--color-border);border-radius:7px;margin:0 0 12px;overflow:hidden}
+.challenge-phase-summary{list-style:none;display:flex;align-items:center;gap:16px;padding:19px 21px;cursor:pointer}
+.challenge-phase-summary::-webkit-details-marker{display:none}
+.challenge-phase-number{font-family:var(--font-serif);font-size:25px;color:var(--color-gold);font-weight:500;min-width:34px}
+.challenge-phase-copy{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.challenge-phase-copy strong{font-family:var(--font-serif);font-size:20px;font-weight:600;letter-spacing:-.025em;color:var(--color-brand)}
+.challenge-phase-copy small{font-size:11px;color:var(--color-text-secondary);line-height:1.4}
+.challenge-phase-count{font-size:11px;color:var(--color-text-secondary);font-variant-numeric:tabular-nums;white-space:nowrap}
+.challenge-phase-chevron{font-size:17px;color:var(--color-gold);transition:transform .2s ease}
+.challenge-phase[open] .challenge-phase-chevron{transform:rotate(45deg)}
+.challenge-phase-progress{height:2px;background:#E9E4DA}
+.challenge-phase-progress span{display:block;height:100%;background:var(--color-gold)}
+.challenge-phase-days{padding:4px 18px 12px}
+.challenge-phase-days .challenge-day:last-child{border-bottom:0}
+.challenge-day-status{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#8A8377;white-space:nowrap}
+.challenge-day:disabled{cursor:not-allowed;opacity:.42}
+@media(max-width:759px){
+ .challenge-phase-summary{padding:16px 14px;gap:10px}
+ .challenge-phase-copy strong{font-size:18px}
+ .challenge-phase-copy small{font-size:10px}
+ .challenge-phase-number{font-size:22px;min-width:27px}
+ .challenge-phase-days{padding:3px 12px 10px}
+ .challenge-day-status{font-size:8px}
+}
