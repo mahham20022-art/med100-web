@@ -33,11 +33,11 @@ export function renderReviews(root) {
   // a queue rebuild, or they'd stomp the very state they just set.
   function renderCurrent() {
     if (queue.length === 0) {
-      root.innerHTML = `<div class="empty-state">Nothing due right now. Complete more days in the Challenge to add material to review.</div>`;
+      root.innerHTML = pageHeading() + `<div class="empty-state">Nothing due right now. Complete more days in the Challenge to add material to review.</div>`;
       return;
     }
     const card = queue[current];
-    root.innerHTML = cardTemplate(card, current, queue.length, showingBack);
+    root.innerHTML = pageHeading() + cardTemplate(card, current, queue.length, showingBack);
     wire(card);
   }
 
@@ -95,13 +95,18 @@ export function renderReviews(root) {
   return subscribe(refresh);
 }
 
-function cardTemplate(card, index, total, showingBack) {
+function pageHeading() {
   return `
     <div class="page-heading">
       <span class="page-eyebrow">SPACED REPETITION</span>
       <h2>Review & retain</h2>
       <p>Strengthen recall with your scheduled review cards.</p>
     </div>
+  `;
+}
+
+function cardTemplate(card, index, total, showingBack) {
+  return `
     <div class="card-title" style="text-align:center;">Reviewing ${index + 1} of ${total}</div>
     <div class="card" style="min-height:160px;display:flex;align-items:center;justify-content:center;text-align:center;padding:var(--sp-6);">
       <div>
