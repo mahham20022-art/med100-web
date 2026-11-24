@@ -97,6 +97,11 @@ export function renderReviews(root) {
 
 function cardTemplate(card, index, total, showingBack) {
   return `
+    <div class="page-heading">
+      <span class="page-eyebrow">SPACED REPETITION</span>
+      <h2>Review & retain</h2>
+      <p>Strengthen recall with your scheduled review cards.</p>
+    </div>
     <div class="card-title" style="text-align:center;">Reviewing ${index + 1} of ${total}</div>
     <div class="card" style="min-height:160px;display:flex;align-items:center;justify-content:center;text-align:center;padding:var(--sp-6);">
       <div>
