@@ -1,20 +1,21 @@
 /* Med100 design tokens — the single source of truth for color, type,
    spacing and radius. Every other CSS file reads these; none hard-codes
-   a color or spacing value. */
+   a color or spacing value.
+   V2.0 palette: Deep Navy / Pure White / Premium Gold / Soft Gray. */
 :root {
   /* Palette */
-  --color-brand: #0B6E4F;       /* deep medical green */
-  --color-brand-dark: #073B30;  /* dark forest */
-  --color-bg: #F7F8F5;          /* warm off-white */
-  --color-surface-alt: #E9EEE9; /* soft neutral */
-  --color-gold: #C6A15B;        /* accent */
-  --color-text: #18231F;        /* primary text */
-  --color-text-secondary: #68756E;
+  --color-brand: #10233F;       /* deep navy — primary */
+  --color-brand-dark: #0A1829;  /* darker navy — headers/auth background */
+  --color-bg: #F3F6FA;          /* soft gray */
+  --color-surface-alt: #E8EDF5; /* soft gray, slightly tinted */
+  --color-gold: #C7A45B;        /* premium gold accent */
+  --color-text: #10233F;        /* primary text — navy */
+  --color-text-secondary: #5B6B82;
   --color-surface: #FFFFFF;
-  --color-border: #DDE3DD;
+  --color-border: #DCE3ED;
   --color-danger: #9C3B3B;
   --color-danger-bg: #F6E7E7;
-  --color-success: #0B6E4F;
+  --color-success: #10233F;
 
   /* Typography */
   --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -41,8 +42,8 @@
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 18px;
-  --shadow-sm: 0 1px 3px rgba(7, 59, 48, 0.08);
-  --shadow-md: 0 4px 16px rgba(7, 59, 48, 0.10);
+  --shadow-sm: 0 1px 3px rgba(16, 35, 63, 0.08);
+  --shadow-md: 0 4px 16px rgba(16, 35, 63, 0.10);
 
   /* Layout */
   --max-content-width: 520px;

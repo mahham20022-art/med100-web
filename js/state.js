@@ -9,8 +9,11 @@ export const state = {
   authReady: false,
   completedDays: [],
   hasStartedAt: false,
+  lastActionDate: null, // ms timestamp of the last completed-day action
   notes: [],
   flashcardSchedule: [], // [{id, topicId, stage, dueDate, ...}]
+  quizAttempts: [], // most recent 200, for Performance Snapshot
+  teachingSessions: [], // most recent 20, for Recent Activity
 };
 
 export function setState(patch) {

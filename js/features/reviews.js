@@ -3,30 +3,9 @@
 // from-scratch SM-2 design, because this data is meant to be the same
 // shared schedule on both platforms (users/{uid}/flashcardSchedule/{id}).
 import { state, subscribe } from '../state.js';
-import { CURRICULUM } from '../data/curriculum.js';
 import { upsertFlashcardSchedule } from '../core/sync.js';
 import { esc } from '../core/dom.js';
-
-const DAY_MS = 24 * 60 * 60 * 1000;
-const STAGE_INTERVALS = { newCard: 0, day7: 7 * DAY_MS, day30: 30 * DAY_MS, day90: 90 * DAY_MS };
-const STAGE_ORDER = ['newCard', 'day7', 'day30', 'day90', 'mastered'];
-
-function flashcardsForCompletedDays() {
-  const cards = [];
-  for (const dayNum of state.completedDays) {
-    const day = CURRICULUM.find((d) => d.day === dayNum);
-    if (!day || day.comingSoon) continue;
-    day.keyConcepts.forEach((text, i) => {
-      cards.push({ id: `${day.topicId}:kc:${i}`, topicId: day.topicId, front: `${day.title} — key concept`, back: text });
-    });
-  }
-  return cards;
-}
-
-function isDue(scheduleEntry) {
-  if (!scheduleEntry) return true; // never scheduled = due now (new)
-  return scheduleEntry.dueDate <= Date.now();
-}
+import { flashcardsForCompletedDays, isDue, STAGE_INTERVALS, STAGE_ORDER } from '../core/spaced-repetition.js';
 
 export function renderReviews(root) {
   const scheduleById = () => new Map(state.flashcardSchedule.map((s) => [s.id, s]));
@@ -41,8 +20,18 @@ export function renderReviews(root) {
     showingBack = false;
   }
 
-  function paint() {
+  // Full rebuild from external state (initial mount, or a Firestore
+  // update arriving via subscribe()) — this is the only path allowed
+  // to reset `current`/`showingBack`.
+  function refresh() {
     buildQueue();
+    renderCurrent();
+  }
+
+  // Pure render of whatever queue/current/showingBack already are —
+  // used by in-session UI actions (flip, grade) that must NOT trigger
+  // a queue rebuild, or they'd stomp the very state they just set.
+  function renderCurrent() {
     if (queue.length === 0) {
       root.innerHTML = `<div class="empty-state">Nothing due right now. Complete more days in the Challenge to add material to review.</div>`;
       return;
@@ -57,7 +46,7 @@ export function renderReviews(root) {
     if (flipBtn) {
       flipBtn.addEventListener('click', () => {
         showingBack = true;
-        paint();
+        renderCurrent();
       });
     }
     root.querySelectorAll('[data-grade]').forEach((btn) => {
@@ -85,22 +74,25 @@ export function renderReviews(root) {
             timesLapsed: (existing?.timesLapsed || 0) + (grade === 'again' ? 1 : 0),
             createdAt: existing?.createdAt || Date.now(),
           });
+          // No manual state mutation here: the write updates
+          // flashcardSchedule, which flows back through the
+          // subscribe(refresh) below (Firestore's local-cache
+          // onSnapshot fires before the write is even server-acked),
+          // rebuilding the queue with this card now correctly excluded
+          // and naturally landing on the next due card. Manually
+          // advancing `current` here as well would race the
+          // subscription's own rebuild and show the wrong card.
         } catch (error) {
           console.error('Failed to update flashcard schedule:', error);
-        }
-        current++;
-        showingBack = false;
-        if (current >= queue.length) paint();
-        else {
-          root.innerHTML = cardTemplate(queue[current], current, queue.length, false);
-          wire(queue[current]);
+          showingBack = false;
+          renderCurrent();
         }
       });
     });
   }
 
-  paint();
-  return subscribe(paint);
+  refresh();
+  return subscribe(refresh);
 }
 
 function cardTemplate(card, index, total, showingBack) {
