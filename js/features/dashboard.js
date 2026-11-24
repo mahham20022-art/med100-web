@@ -246,16 +246,21 @@ function template() {
   const today = getDay(nextDay);
   const isDone = total >= TOTAL_DAYS;
 
-  return [
-    welcomeSection(),
-    todaysMissionSection(nextDay, today, isDone),
-    journeySection(total, nextDay),
-    momentumSection(current),
-    dueReviewSection(),
-    performanceSection(),
-    quickAccessSection(nextDay),
-    recentActivitySection(),
-  ].join('');
+  const due = dueReviewSection();
+  const performance = performanceSection();
+  const recent = recentActivitySection();
+  return `
+    <div class="dashboard-view">
+      <section class="dashboard-welcome">${welcomeSection()}</section>
+      <section class="dashboard-mission">${todaysMissionSection(nextDay, today, isDone)}</section>
+      <section class="dashboard-journey">${journeySection(total, nextDay)}</section>
+      <section class="dashboard-momentum">${momentumSection(current)}</section>
+      ${due ? `<section class="dashboard-due">${due}</section>` : ''}
+      ${performance ? `<section class="dashboard-performance">${performance}</section>` : ''}
+      <section class="dashboard-quick">${quickAccessSection(nextDay)}</section>
+      ${recent ? `<section class="dashboard-recent">${recent}</section>` : ''}
+    </div>
+  `;
 }
 
 function wire(root) {

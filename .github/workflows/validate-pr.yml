@@ -1,0 +1,27 @@
+name: Validate Med100 pull requests
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check JavaScript syntax
+        run: |
+          while IFS= read -r file; do
+            node --check --input-type=module < "$file"
+          done < <(find js -type f -name '*.js' -print)
+      - name: Validate local imports and HTML assets
+        run: node scripts/validate-static.mjs

@@ -17,7 +17,7 @@ const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRec
 export function renderTeaching(root, dayParam) {
   const day = getDay(dayParam);
   if (!day || day.comingSoon) {
-    root.innerHTML = `<div class="empty-state">No topic content to teach yet.</div>`;
+    root.innerHTML = `<div class="page-heading"><span class="page-eyebrow">TEACHING MODE</span><h2>Teach it back</h2><p>No topic content is available for this day yet.</p></div><div class="empty-state">Choose an available topic from your Challenge.</div>`;
     return;
   }
 
@@ -130,6 +130,7 @@ export function renderTeaching(root, dayParam) {
       }
 
       root.innerHTML = `
+        <div class="page-heading"><span class="page-eyebrow">REFLECTION COMPLETE</span><h2>Teaching session saved</h2><p>Your self-assessment has been recorded.</p></div>
         <div class="card" style="text-align:center;">
           <div class="card-title">Mastery Score (self-assessed)</div>
           <div style="font-size:var(--fs-2xl);font-weight:800;color:var(--color-brand);">${overall}</div>
@@ -145,8 +146,11 @@ export function renderTeaching(root, dayParam) {
 
 function inputTemplate(day) {
   return `
-    <span class="pill">${esc(day.system)}</span>
-    <h2 style="margin:var(--sp-2) 0 var(--sp-4);font-size:var(--fs-lg);">Explain: ${esc(day.title)}</h2>
+    <div class="page-heading">
+      <span class="page-eyebrow">TEACHING MODE · DAY ${day.day}</span>
+      <h2>Teach it back</h2>
+      <p>${esc(day.title)} · ${esc(day.system)}</p>
+    </div>
     <p style="color:var(--color-text-secondary);margin-bottom:var(--sp-4);">
       Explain this topic as if teaching a colleague who has never seen it. Write at least a
       few sentences covering the core mechanism and why it matters clinically.
@@ -164,6 +168,11 @@ function inputTemplate(day) {
 
 function assessmentTemplate(day) {
   return `
+    <div class="page-heading">
+      <span class="page-eyebrow">REFLECT & CONSOLIDATE</span>
+      <h2>Self-assessment</h2>
+      <p>Rate your explanation honestly. This is a self-assessment, not an AI-generated score.</p>
+    </div>
     <div class="card">
       <div class="card-title">Self-Assessment — ${esc(day.title)}</div>
       <p style="color:var(--color-text-secondary);font-size:var(--fs-sm);margin-bottom:var(--sp-4);">

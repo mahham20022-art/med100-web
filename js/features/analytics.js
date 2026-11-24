@@ -22,6 +22,11 @@ function template() {
   const consistency = total > 0 ? Math.round((current / total) * 100) : 0;
 
   return `
+    <div class="page-heading">
+      <span class="page-eyebrow">YOUR LEARNING DATA</span>
+      <h2>Progress & insight</h2>
+      <p>A clear view of consistency, retention and completed work.</p>
+    </div>
     <div class="stat-grid">
       <div class="stat-tile"><div class="value">${total}</div><div class="label">Days completed</div></div>
       <div class="stat-tile"><div class="value">${TOTAL_DAYS - total}</div><div class="label">Days remaining</div></div>

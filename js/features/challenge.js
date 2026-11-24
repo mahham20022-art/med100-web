@@ -35,6 +35,11 @@ function template() {
   }).join('');
 
   return `
+    <div class="page-heading">
+      <span class="page-eyebrow">YOUR 100-DAY PLAN</span>
+      <h2>The Challenge</h2>
+      <p>Build consistency. Complete one focused step at a time.</p>
+    </div>
     <div class="card" style="display:flex;align-items:center;justify-content:space-between;">
       <div>
         <div class="card-title" style="margin-bottom:0;">Progress</div>
