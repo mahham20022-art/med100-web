@@ -19,7 +19,6 @@ function template() {
   const { current, longest, total } = computeStreaks(state.completedDays);
   const mastered = state.flashcardSchedule.filter((s) => s.stage === 'mastered').length;
   const dueNow = state.flashcardSchedule.filter((s) => s.dueDate <= Date.now()).length;
-  const consistency = total > 0 ? Math.round((current / total) * 100) : 0;
 
   return `
     <div class="page-heading">
@@ -36,10 +35,10 @@ function template() {
       <div class="stat-tile"><div class="value">${dueNow}</div><div class="label">Cards due now</div></div>
     </div>
     <div class="card" style="margin-top:var(--sp-4);">
-      <div class="card-title">Consistency</div>
+      <div class="card-title">Your study rhythm</div>
       <p style="color:var(--color-text-secondary);font-size:var(--fs-sm);">
-        Your current streak is ${consistency}% of your total completed days —
-        ${consistency >= 80 ? 'very consistent studying.' : consistency >= 40 ? 'solid, with some gaps.' : 'try to close the gaps between study days.'}
+        You have completed ${total} study days. Your current consecutive run is ${current} days,
+        and your longest recorded run is ${longest} days.
       </p>
     </div>
   `;
