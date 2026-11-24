@@ -11,6 +11,7 @@ import { relativeDay, relativeTime } from '../core/time.js';
 import { esc } from '../core/dom.js';
 import { navigate } from '../router.js';
 import { dueFlashcards, overdueCount } from '../core/spaced-repetition.js';
+import { icon } from '../core/icons.js';
 
 const TOTAL_DAYS = 100;
 
@@ -45,7 +46,7 @@ function welcomeSection() {
 function todaysMissionSection(nextDay, today, isDone) {
   if (isDone) {
     return `
-      <div class="card" style="border:1.5px solid var(--color-gold);">
+      <div class="card card-mission">
         <div class="card-title" style="color:var(--color-gold);">Journey Complete</div>
         <p>You've completed all 100 days. Revisit any topic any time from the Topics tab.</p>
       </div>
@@ -53,14 +54,14 @@ function todaysMissionSection(nextDay, today, isDone) {
   }
   if (today.comingSoon) {
     return `
-      <div class="card" style="border:1.5px solid var(--color-gold);">
+      <div class="card card-mission">
         <div class="card-title" style="color:var(--color-gold);">Today's Mission — Day ${nextDay}</div>
         <p style="color:var(--color-text-secondary);">This day's content isn't written yet.</p>
       </div>
     `;
   }
   return `
-    <div class="card" style="border:1.5px solid var(--color-gold);">
+    <div class="card card-mission">
       <div class="card-title" style="color:var(--color-gold);">Today's Mission — Day ${nextDay}</div>
       <h3 style="font-size:var(--fs-md);margin-bottom:var(--sp-1);">${esc(today.title)}</h3>
       <span class="pill">${esc(today.system)}</span>
@@ -81,8 +82,14 @@ function journeySection(total, nextDay) {
       <div class="card-title">The 100-Day Journey</div>
       <div class="ring" style="width:180px;height:180px;">
         <svg viewBox="0 0 180 180">
+          <defs>
+            <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="var(--color-brand)"/>
+              <stop offset="100%" stop-color="var(--color-gold)"/>
+            </linearGradient>
+          </defs>
           <circle class="ring-track" cx="90" cy="90" r="${radius}"></circle>
-          <circle class="ring-fill" cx="90" cy="90" r="${radius}"
+          <circle class="ring-fill" cx="90" cy="90" r="${radius}" stroke="url(#ringGradient)"
             style="stroke-dasharray:${circumference};stroke-dashoffset:${offset}"></circle>
         </svg>
         <div class="ring-center">
@@ -166,22 +173,27 @@ function performanceSection() {
 
 function quickAccessSection(nextDay) {
   const items = [
-    { label: 'Challenge', route: '/challenge' },
-    { label: 'Topics', route: '/topics' },
-    { label: 'MCQ', route: `/mastery/${Math.min(nextDay, TOTAL_DAYS)}` },
-    { label: 'Teaching', route: `/teaching/${Math.min(nextDay, TOTAL_DAYS)}` },
-    { label: 'Review', route: '/reviews' },
-    { label: 'Notes', route: '/notes' },
-    { label: 'Analytics', route: '/progress' },
-    { label: 'Profile', route: '/profile' },
+    { label: 'Challenge', route: '/challenge', icon: 'challenge' },
+    { label: 'Topics', route: '/topics', icon: 'topics' },
+    { label: 'MCQ', route: `/mastery/${Math.min(nextDay, TOTAL_DAYS)}`, icon: 'mcq' },
+    { label: 'Teaching', route: `/teaching/${Math.min(nextDay, TOTAL_DAYS)}`, icon: 'teaching' },
+    { label: 'Review', route: '/reviews', icon: 'review' },
+    { label: 'Notes', route: '/notes', icon: 'notes' },
+    { label: 'Analytics', route: '/progress', icon: 'analytics' },
+    { label: 'Profile', route: '/profile', icon: 'profile' },
   ];
   return `
     <div class="card">
       <div class="card-title">Quick Access</div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2);">
+      <div class="quick-grid">
         ${items
           .map(
-            (it) => `<button data-quick="${it.route}" class="btn btn-outline btn-sm" style="width:100%;padding:10px 4px;font-size:var(--fs-xs);">${esc(it.label)}</button>`,
+            (it) => `
+              <button data-quick="${it.route}" class="quick-tile">
+                <span class="quick-tile-icon">${icon(it.icon)}</span>
+                <span class="quick-tile-label">${esc(it.label)}</span>
+              </button>
+            `,
           )
           .join('')}
       </div>
