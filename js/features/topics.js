@@ -14,6 +14,9 @@ export function renderTopics(root) {
 
   const paint = () => {
     root.innerHTML = listTemplate(systems);
+    root.querySelector('#topic-search').value = query;
+    root.querySelector('#system-filter').value = systemFilter;
+    root.querySelector('#status-filter').value = statusFilter;
     wireList();
     applyFilter();
   };
@@ -158,7 +161,7 @@ function topicCard(day) {
   const label = isUpcoming ? 'Coming soon' : isDone ? 'Completed' : 'Study topic';
   const meta = isUpcoming ? 'Content in development' : `${day.system} · ${(day.objectives || []).length} learning objectives`;
   return `
-    <button class="library-topic-card ${isUpcoming ? 'is-upcoming' : ''}" data-topic-card data-day="${day.day}" type="button" ${isUpcoming ? 'aria-label' : 'aria-label'}="Day ${day.day}: ${esc(day.title)} — ${label}">
+    <button class="library-topic-card ${isUpcoming ? 'is-upcoming' : ''}" data-topic-card data-day="${day.day}" type="button" aria-label="Day ${day.day}: ${esc(day.title)} — ${label}">
       <span class="library-topic-index">${String(day.day).padStart(2, '0')}</span>
       <span class="library-topic-copy">
         <strong>${esc(day.title)}</strong>
