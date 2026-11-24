@@ -19,6 +19,7 @@ export function renderChallenge(root) {
 function template() {
   const { total } = computeStreaks(state.completedDays);
   const nextDay = Math.min(total + 1, TOTAL_DAYS);
+  const currentDay = CURRICULUM.find(d => d.day === nextDay);
 
   const phases = [
     { name: 'Foundation', range: [1, 20], note: 'Build the essential clinical framework.' },
@@ -71,7 +72,7 @@ function template() {
         <div class="card-title" style="margin-bottom:0;">Progress</div>
         <strong style="font-size:var(--fs-lg);color:var(--color-brand);">${total}/${TOTAL_DAYS}</strong>
       </div>
-      ${total < TOTAL_DAYS ? `<button id="btn-mark-done" class="btn btn-primary" style="width:auto;">Mark Today as Done</button>` : ''}
+      ${total < TOTAL_DAYS && !currentDay?.comingSoon ? `<button id="btn-mark-done" class="btn btn-primary" style="width:auto;">Mark Today as Done</button>` : total < TOTAL_DAYS ? `<span class="challenge-content-pending">Next topic is being prepared</span>` : ''}
     </div>
     ${phaseMarkup}
   `;
