@@ -1,3 +1,4 @@
+import { CURRICULUM } from './curriculum.js';
 // A curated MCQ bank, written to match curriculum.js's real days. Not
 // sourced from Firestore's `mcqs`/`mcqAnswers` collections: those are
 // server-write-only and currently empty (the Editorial publish pipeline
@@ -380,4 +381,93 @@ export const QUESTIONS_BY_TOPIC = {
 
 export function getQuestionsForTopic(topicId) {
   return QUESTIONS_BY_TOPIC[topicId] || [];
+}
+
+
+// Additional curated questions, explicitly tagged by difficulty.
+QUESTIONS_BY_TOPIC['cardio-hf-1'].push(
+  { id: 'q3', stem: "Which haemodynamic change most directly explains pulmonary crackles in left-sided heart failure?", options: ["Raised pulmonary capillary hydrostatic pressure","Reduced systemic venous pressure","Increased alveolar surfactant production","Reduced left atrial pressure"], correct: 0, explanation: "Elevated left-sided filling pressures are transmitted to pulmonary veins and capillaries, promoting interstitial and alveolar fluid accumulation.", difficulty: 'Intermediate' },
+  { id: 'q4', stem: "Raised jugular venous pressure and peripheral oedema in heart failure primarily reflect:", options: ["Systemic venous congestion","Isolated pulmonary arterial obstruction","Reduced plasma sodium","Increased ejection fraction"], correct: 0, explanation: "Raised right-sided filling pressure produces systemic venous congestion, often seen as elevated JVP and dependent oedema.", difficulty: 'Foundational' },
+);
+QUESTIONS_BY_TOPIC['pulm-asthma-1'].push(
+  { id: 'q3', stem: "Which spirometric finding supports variable expiratory airflow limitation in asthma?", options: ["Reduced FEV1/FVC that improves after bronchodilator","Persistently increased FEV1/FVC","Reduced TLC with normal FEV1/FVC","Isolated reduced diffusing capacity"], correct: 0, explanation: "Asthma commonly produces obstruction that improves after bronchodilator. Normal spirometry between episodes does not exclude asthma.", difficulty: 'Intermediate' },
+  { id: 'q4', stem: "Which inflammatory cell is strongly associated with classic type 2-high asthma?", options: ["Eosinophil","Erythrocyte","Platelet","Fibroblast only"], correct: 0, explanation: "Type 2-high asthma is commonly associated with eosinophilic airway inflammation, although asthma is biologically heterogeneous.", difficulty: 'Foundational' },
+);
+QUESTIONS_BY_TOPIC['nephro-aki-1'].push(
+  { id: 'q3', stem: "Hydronephrosis on renal ultrasound in a patient with AKI should prompt assessment for:", options: ["Postrenal urinary obstruction","Prerenal hypoperfusion only","Glomerular hyperfiltration","Isolated rhabdomyolysis"], correct: 0, explanation: "Hydronephrosis indicates collecting-system dilatation and should prompt assessment for urinary tract obstruction.", difficulty: 'Foundational' },
+  { id: 'q4', stem: "Why can fractional excretion of sodium be misleading in AKI?", options: ["Diuretics and clinical states alter sodium handling","It directly measures GFR","It is always high in prerenal AKI","It is unaffected by CKD"], correct: 0, explanation: "Diuretics, sepsis and intrinsic renal disorders can alter sodium handling; FeNa must be interpreted in clinical context.", difficulty: 'Advanced' },
+);
+QUESTIONS_BY_TOPIC['endo-dm-1'].push(
+  { id: 'q3', stem: "Which mechanism is central to diabetic ketoacidosis?", options: ["Insulin deficiency with increased counter-regulatory hormones","Excess insulin suppressing lipolysis","Isolated aldosterone deficiency","Increased peripheral glucose uptake"], correct: 0, explanation: "Insulin deficiency plus counter-regulatory hormones promotes lipolysis and hepatic ketone production.", difficulty: 'Intermediate' },
+  { id: 'q4', stem: "Which test estimates average glycaemia over roughly the preceding two to three months?", options: ["HbA1c","Single random glucose","Urine ketones","Fasting insulin"], correct: 0, explanation: "HbA1c reflects glycation over the lifespan of circulating erythrocytes and estimates average glycaemia over recent months.", difficulty: 'Foundational' },
+);
+QUESTIONS_BY_TOPIC['neuro-stroke-1'].push(
+  { id: 'q3', stem: "In suspected acute ischaemic stroke, CT angiography primarily helps identify:", options: ["Large-vessel occlusion and arterial anatomy","Exact age of every infarct","Microscopic neuronal injury","Cerebral amyloid"], correct: 0, explanation: "CTA identifies arterial occlusion or stenosis and helps determine eligibility for endovascular thrombectomy in the appropriate context.", difficulty: 'Intermediate' },
+  { id: 'q4', stem: "Sudden focal neurological symptoms resolving completely after 20 minutes should be interpreted as:", options: ["Possible TIA requiring urgent assessment","Benign because symptoms resolved","Confirmed haemorrhagic stroke","No need for vascular risk assessment"], correct: 0, explanation: "Transient focal symptoms may represent TIA and carry early stroke risk; resolution does not remove the need for urgent evaluation.", difficulty: 'Foundational' },
+);
+QUESTIONS_BY_TOPIC['id-sepsis-1'].push(
+  { id: 'q3', stem: "Which variable is included in the SOFA score?", options: ["Platelet count","Body mass index","Serum amylase","Visual acuity"], correct: 0, explanation: "SOFA assesses respiratory, coagulation, liver, cardiovascular, neurological and renal dysfunction; platelet count is the coagulation component.", difficulty: 'Intermediate' },
+  { id: 'q4', stem: "Why must lactate be interpreted in clinical context in suspected sepsis?", options: ["It rises from several causes and is not infection-specific","It directly measures bacterial load","Normal lactate excludes sepsis","It measures oxygen saturation"], correct: 0, explanation: "Lactate can rise with impaired perfusion, adrenergic stimulation, seizures, impaired clearance and other causes.", difficulty: 'Advanced' },
+);
+QUESTIONS_BY_TOPIC['pulm-copd-1'].push(
+  { id: 'q3', stem: "Which spirometric criterion is commonly used to confirm persistent airflow obstruction in COPD?", options: ["Post-bronchodilator FEV1/FVC below 0.70","Pre-bronchodilator FEV1 above 80% predicted","TLC below 80% predicted","DLCO above 120% predicted"], correct: 0, explanation: "GOLD uses post-bronchodilator FEV1/FVC below 0.70 in the appropriate clinical context.", difficulty: 'Intermediate' },
+  { id: 'q4', stem: "Which intervention most clearly slows smoking-related accelerated lung-function decline in COPD?", options: ["Smoking cessation","Routine antibiotics without infection","Long-term oral steroids for all","Avoiding physical activity"], correct: 0, explanation: "Smoking cessation is the key intervention to reduce ongoing tobacco-related lung injury.", difficulty: 'Foundational' },
+);
+QUESTIONS_BY_TOPIC['gi-ibd-1'].push(
+  { id: 'q3', stem: "Which extraintestinal manifestation may occur in both Crohn disease and ulcerative colitis?", options: ["Peripheral inflammatory arthritis","Disease limited exclusively to bowel","Obligate pancreatic destruction","Congenital gallbladder absence"], correct: 0, explanation: "Peripheral inflammatory arthritis can accompany either Crohn disease or ulcerative colitis.", difficulty: 'Foundational' },
+  { id: 'q4', stem: "Ulcerative colitis classically causes continuous inflammation beginning in the rectum, predominantly involving:", options: ["Mucosa","Full bowel wall in all cases","Serosa only","Mesenteric fat only"], correct: 0, explanation: "Ulcerative colitis classically causes continuous mucosal inflammation beginning in the rectum.", difficulty: 'Intermediate' },
+);
+QUESTIONS_BY_TOPIC['rheum-ra-1'].push(
+  { id: 'q3', stem: "Which antibody is generally more specific for rheumatoid arthritis than rheumatoid factor?", options: ["Anti-CCP (ACPA)","ANA","Anti-mitochondrial antibody","Anti-centromere antibody"], correct: 0, explanation: "Anti-CCP antibodies have relatively high specificity for rheumatoid arthritis and may predate clinical disease.", difficulty: 'Intermediate' },
+  { id: 'q4', stem: "What is the principal purpose of early DMARD therapy in rheumatoid arthritis?", options: ["Limit structural joint damage and persistent inflammation","Provide immediate analgesia only","Eradicate bacterial joint infection","Reverse established deformity in every patient"], correct: 0, explanation: "Early DMARD treatment aims to suppress inflammation and prevent progressive erosive joint damage.", difficulty: 'Foundational' },
+);
+QUESTIONS_BY_TOPIC['heme-anemia-1'].push(
+  { id: 'q3', stem: "Which laboratory pattern is most consistent with iron deficiency anaemia?", options: ["Low ferritin with increased TIBC","High ferritin with high transferrin saturation","High serum iron with low TIBC","High ferritin in every case"], correct: 0, explanation: "Iron deficiency typically produces low ferritin and increased transferrin/TIBC, although inflammation can elevate ferritin.", difficulty: 'Intermediate' },
+  { id: 'q4', stem: "A low reticulocyte count in a patient with anaemia suggests:", options: ["Reduced effective red-cell production","A brisk marrow response","Acute haemolysis is proven","Recent major blood loss is proven"], correct: 0, explanation: "An inadequate reticulocyte response suggests reduced marrow production relative to the degree of anaemia.", difficulty: 'Intermediate' },
+);
+QUESTIONS_BY_TOPIC['psych-mood-1'].push(
+  { id: 'q3', stem: "Which feature distinguishes mania from hypomania?", options: ["Marked impairment, hospitalisation or psychosis may occur","Symptoms always last less than 24 hours","No change in energy","Occurs only with intoxication"], correct: 0, explanation: "Mania causes marked impairment, may require hospitalisation or include psychosis; these are not features of hypomania.", difficulty: 'Intermediate' },
+  { id: 'q4', stem: "Before attributing new elevated mood to bipolar disorder, assess:", options: ["Medication, substance and medical causes","Only preferred sleep schedule","Routine brain biopsy","Exclude all family history"], correct: 0, explanation: "Substances, prescribed medications and medical or neurological conditions can produce secondary mood symptoms.", difficulty: 'Foundational' },
+);
+QUESTIONS_BY_TOPIC['obgyn-preeclampsia-1'].push(
+  { id: 'q3', stem: "New hypertension after 20 weeks can support preeclampsia when accompanied by:", options: ["Proteinuria or specified maternal end-organ dysfunction","Peripheral oedema alone","First-trimester nausea only","A single mildly elevated temperature"], correct: 0, explanation: "Preeclampsia is new hypertension after 20 weeks with proteinuria or, without it, specified maternal organ dysfunction.", difficulty: 'Intermediate' },
+  { id: 'q4', stem: "Which neurological symptom in suspected preeclampsia is concerning for severe disease?", options: ["Persistent severe headache or visual disturbance","Mild fatigue after exercise","Rhinorrhoea","Motion sickness"], correct: 0, explanation: "Persistent severe headache and visual symptoms can indicate cerebral involvement and require urgent obstetric assessment.", difficulty: 'Foundational' },
+);
+QUESTIONS_BY_TOPIC['cardio-arrhythmia-1'].push(
+  { id: 'q3', stem: "A tachyarrhythmia patient has hypotension, altered mental status and shock. What principle guides immediate management?", options: ["Urgent treatment of instability, commonly synchronized cardioversion when appropriate","Outpatient Holter monitoring","Oral rate control and discharge","Exercise stress test first"], correct: 0, explanation: "An unstable tachyarrhythmia requires immediate resuscitative management; synchronized cardioversion is generally indicated for an amenable rhythm with a pulse.", difficulty: 'Intermediate' },
+  { id: 'q4', stem: "Which ECG feature is characteristic of atrial fibrillation?", options: ["Irregularly irregular rhythm without consistent P waves","Regular rhythm with P before every QRS","Fixed PR with dropped QRS","Sawtooth baseline in all cases"], correct: 0, explanation: "Atrial fibrillation typically produces absent discrete P waves and an irregularly irregular ventricular response.", difficulty: 'Foundational' },
+);
+QUESTIONS_BY_TOPIC['nephro-ckd-1'].push(
+  { id: 'q3', stem: "Chronic kidney disease is generally defined by abnormalities present for at least:", options: ["Three months","One week","Two weeks","One month"], correct: 0, explanation: "CKD requires kidney structural or functional abnormalities with implications for health, present for at least three months.", difficulty: 'Foundational' },
+  { id: 'q4', stem: "Which measure is used with eGFR to classify albuminuria in CKD?", options: ["Urine albumin-to-creatinine ratio","Serum sodium-to-potassium ratio","Urine ketones","Serum amylase"], correct: 0, explanation: "CKD risk classification combines GFR category with albuminuria category, commonly assessed by urine albumin-to-creatinine ratio.", difficulty: 'Intermediate' },
+);
+QUESTIONS_BY_TOPIC['endo-thyroid-1'].push(
+  { id: 'q3', stem: "Which biochemical pattern is typical of overt primary hypothyroidism?", options: ["Raised TSH with low free T4","Suppressed TSH with high free T4","Suppressed TSH with low free T4 in every case","Normal TSH with high T3"], correct: 0, explanation: "Primary thyroid failure reduces negative feedback, producing elevated TSH and low free T4 in overt disease.", difficulty: 'Foundational' },
+  { id: 'q4', stem: "A patient has suppressed TSH and suspected thyrotoxicosis. Which tests quantify hormone excess?", options: ["Free T4 and/or T3","Ferritin alone","Urine ACR","Cortisol alone"], correct: 0, explanation: "Free T4 and T3 characterize circulating thyroid hormone excess when TSH is suppressed.", difficulty: 'Foundational' },
+);
+QUESTIONS_BY_TOPIC['neuro-seizure-1'].push(
+  { id: 'q3', stem: "A convulsive seizure lasting five minutes or longer should raise concern for:", options: ["Convulsive status epilepticus","Simple faint only","Migraine aura","Sleep disorder"], correct: 0, explanation: "The operational treatment threshold for convulsive status epilepticus is five minutes, or recurrent seizures without recovery.", difficulty: 'Intermediate' },
+  { id: 'q4', stem: "Which feature supports focal-onset seizure?", options: ["Initial symptoms localising to one hemisphere","Generalised symptoms with no focal onset in every case","Fever a week later","Normal interictal examination"], correct: 0, explanation: "Focal seizures originate within networks in one hemisphere and may begin with lateralised motor, sensory, autonomic or cognitive symptoms.", difficulty: 'Foundational' },
+);
+QUESTIONS_BY_TOPIC['id-meningitis-1'].push(
+  { id: 'q3', stem: "Which finding in suspected bacterial meningitis supports considering neuroimaging before LP?", options: ["New focal deficit or markedly impaired consciousness","Mild sore throat","Normal neurological exam in stable patient","Seasonal allergy"], correct: 0, explanation: "Focal deficit, markedly impaired consciousness, new seizure or papilloedema may indicate mass effect and require imaging before LP. Do not delay empiric treatment if suspected bacterial meningitis.", difficulty: 'Advanced' },
+  { id: 'q4', stem: "Why should empiric antibiotics not be delayed when bacterial meningitis is strongly suspected?", options: ["Delay in effective treatment is associated with worse outcomes","CSF culture becomes positive only after antibiotics","Antibiotics immediately normalise ICP","Exam identifies organism with certainty"], correct: 0, explanation: "Bacterial meningitis is time-critical. If LP or imaging delays treatment, obtain blood cultures when feasible and start empiric therapy promptly per local guidance.", difficulty: 'Intermediate' },
+);
+QUESTIONS_BY_TOPIC['em-shock-1'].push(
+  { id: 'q3', stem: "Which finding is consistent with impaired tissue perfusion in shock?", options: ["Altered mentation with cool peripheries and prolonged capillary refill","Isolated fever with normal perfusion","Normal lactate in all circumstances","Mild tachycardia after exercise"], correct: 0, explanation: "Shock is inadequate tissue perfusion. Altered mentation, cool peripheries and prolonged capillary refill are clinical clues interpreted with the full haemodynamic picture.", difficulty: 'Foundational' },
+  { id: 'q4', stem: "Which haemodynamic pattern is typical of early distributive septic shock?", options: ["Reduced systemic vascular resistance with often increased cardiac output","Markedly increased SVR in every case","Isolated elevated left atrial pressure","Absence of peripheral vasodilation"], correct: 0, explanation: "Early distributive shock commonly features vasodilation and reduced systemic vascular resistance; cardiac output may be normal or elevated.", difficulty: 'Intermediate' },
+);
+
+export function getQuestionBank({ system = 'all', difficulty = 'all' } = {}) {
+  return Object.entries(QUESTIONS_BY_TOPIC).flatMap(([topicId, items]) => {
+    const day = CURRICULUM.find((entry) => entry.topicId === topicId);
+    if (!day || day.comingSoon || (system !== 'all' && day.system !== system)) return [];
+    return items.map((question, index) => ({
+      ...question, topicId, day: day.day, topicTitle: day.title, system: day.system,
+      difficulty: question.difficulty || (index === 0 ? 'Foundational' : 'Intermediate'),
+    })).filter((question) => difficulty === 'all' || question.difficulty === difficulty);
+  });
+}
+export function getQuestionBankSystems() {
+  return [...new Set(getQuestionBank().map((question) => question.system))].sort();
 }

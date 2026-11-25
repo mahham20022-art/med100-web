@@ -54,6 +54,7 @@ export function renderTopics(root) {
 
   function wireList() {
     const search = root.querySelector('#topic-search');
+    root.querySelector('#btn-open-mock')?.addEventListener('click', () => navigate('/mock-exam'));
     search.addEventListener('input', () => {
       query = search.value;
       applyFilter();
@@ -116,6 +117,8 @@ function listTemplate(systems) {
         <span>days completed</span>
       </div>
     </section>
+
+    <div class="library-exam-cta"><div><strong>Ready to test your knowledge?</strong><span>Take a timed assessment across the published question bank.</span></div><button type="button" id="btn-open-mock" class="btn btn-primary">Take mock exam →</button></div>
 
     <section class="library-statline" aria-label="Curriculum overview">
       <div><strong>${publishedCount}</strong><span>Published topics</span></div>
