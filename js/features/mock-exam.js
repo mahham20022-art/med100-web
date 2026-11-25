@@ -19,6 +19,13 @@ export function renderMockExam(root) {
   let finished = false;
   let interval = null;
   const preventExit = (event) => { if (!finished) { event.preventDefault(); event.returnValue = ''; } };
+  const guardInAppNavigation = (event) => {
+    const control = event.target.closest('.nav-btn, #profile-btn, [data-route]');
+    if (!control || finished) return;
+    if (!window.confirm('Leave this mock examination? Your current answers and timer will be lost.')) {
+      event.preventDefault(); event.stopImmediatePropagation();
+    }
+  };
 
   const bank = getQuestionBank();
   const systems = getQuestionBankSystems();
@@ -44,7 +51,7 @@ export function renderMockExam(root) {
         <div id="mock-availability" class="mock-availability">Available questions: ${bank.length}</div>
         <button id="mock-start" class="btn btn-primary">Start mock examination</button>
       </section>
-      <p class="mock-footnote">Once started, the timer cannot be paused. Your answers are recorded individually to your account when signed in. A connection failure is shown clearly and can be retried.</p>
+      <p class="mock-footnote">The timer runs while this exam page is open. Leaving the exam, refreshing or closing the page ends the session; you will be warned before leaving. Signed-in answers are recorded individually, and failed saves can be retried.</p>
     `;
     root.querySelector('#mock-system').value = system;
     root.querySelector('#mock-difficulty').value = difficulty;
@@ -83,6 +90,7 @@ export function renderMockExam(root) {
     finished = false;
     paintExam();
     window.addEventListener('beforeunload', preventExit);
+    document.addEventListener('click', guardInAppNavigation, true);
     interval = setInterval(() => {
       remaining = Math.max(0,Math.ceil((deadline-Date.now())/1000));
       const clock = root.querySelector('#mock-clock');
@@ -159,6 +167,7 @@ export function renderMockExam(root) {
     if(finished) return;
     finished=true;
     window.removeEventListener('beforeunload', preventExit);
+    document.removeEventListener('click', guardInAppNavigation, true);
     if(interval){clearInterval(interval);interval=null;}
     remaining=Math.max(0,Math.ceil((deadline-Date.now())/1000));
     paintResults(timedOut);
@@ -224,7 +233,7 @@ export function renderMockExam(root) {
   }
 
   paintSetup();
-  return () => { window.removeEventListener('beforeunload', preventExit); if(interval) clearInterval(interval); };
+  return () => { window.removeEventListener('beforeunload', preventExit); document.removeEventListener('click', guardInAppNavigation, true); if(interval) clearInterval(interval); };
 }
 
 function formatTime(seconds) {
