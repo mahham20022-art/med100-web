@@ -3,7 +3,7 @@
 // SPA, which search engines see as a single page. Run in CI before upload;
 // output is git-ignored.  node scripts/seo/build.mjs
 import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
-import { CURRICULUM, isReviewed } from '../../js/data/curriculum.js';
+import { CURRICULUM, isReviewed, SOURCES_AS_OF } from '../../js/data/curriculum.js';
 import { QUESTIONS_BY_TOPIC } from '../../js/data/questions.js';
 
 const BASE = 'https://med100.thetract.org';
@@ -77,7 +77,7 @@ ${ok ? `<p class="note ok">Checked against the sources below by ${E(d.review.by)
 <h2>Key concepts</h2><ul>${d.keyConcepts.map((x) => `<li>${inline(x)}</li>`).join('')}</ul>
 <h2>Clinical pearls</h2><ul>${d.clinicalPearls.map((x) => `<li>${inline(x)}</li>`).join('')}</ul>
 <h2>Test yourself</h2>${qs.map((q, n) => `<div class="q"><p>${n + 1}. ${E(q.stem)}</p><ol>${q.options.map((o) => `<li>${E(o)}</li>`).join('')}</ol><details><summary>Show answer</summary><p><b>${String.fromCharCode(65 + q.correct)}. ${E(q.options[q.correct])}</b> ${E(q.explanation)}</p></details></div>`).join('')}
-${(d.sources || []).length ? `<h2>Sources</h2><ol class="src">${d.sources.map((s) => `<li><a href="${E(s.url)}" rel="nofollow noopener">${E(s.label)}</a></li>`).join('')}</ol>` : ''}
+${(d.sources || []).length ? `<h2>Sources</h2><ol class="src">${d.sources.map((s) => `<li><a href="${E(s.url)}" rel="nofollow noopener">${E(s.label)}</a></li>`).join('')}</ol><p style="font-size:14px;color:#5B6170">Editions current as of ${SOURCES_AS_OF}. Drafted with AI assistance from these sources and checked by the editor before a page is marked as checked.</p>` : ''}
 <a class="open" href="${R}#/topic/${d.day}">Study day ${d.day} in the app</a>
 <nav class="pn">${prev ? `<a href="../${slugOf(prev)}/">← Day ${prev.day}: ${E(prev.title.split(' — ')[0])}</a>` : '<span></span>'}${next ? `<a href="../${slugOf(next)}/" style="text-align:right">Day ${next.day}: ${E(next.title.split(' — ')[0])} →</a>` : ''}</nav>`;
   const ld = { '@context': 'https://schema.org', '@type': 'LearningResource', name: d.title, description: desc, educationalLevel: 'Medical students and junior doctors', learningResourceType: 'Lesson', about: d.system, inLanguage: 'en', url: `${BASE}/days/${slug}/`, publisher: PUB, isAccessibleForFree: true, isPartOf: { '@type': 'Course', name: 'Med100', url: `${BASE}/` } };

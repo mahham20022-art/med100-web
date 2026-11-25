@@ -1,5 +1,5 @@
 import { state, subscribe } from '../state.js';
-import { CURRICULUM, getDay, isReviewed } from '../data/curriculum.js';
+import { CURRICULUM, getDay, isReviewed, SOURCES_AS_OF } from '../data/curriculum.js';
 import { markDayComplete } from '../core/sync.js';
 import { computeStreaks } from '../core/streaks.js';
 import { dailyStreak } from '../core/activity.js';
@@ -261,7 +261,8 @@ function detailTemplate(day) {
       <div class="pearls">${day.clinicalPearls.map((p) => `<div class="pearl">${PEARL}${esc(p)}</div>`).join('')}</div></section>
 
     ${day.sources && day.sources.length ? `<section class="sec"><div class="sec-h"><span>05</span><h2>Sources</h2></div>
-      <ol class="sources">${day.sources.map((x) => `<li><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.label)}</a></li>`).join('')}</ol></section>` : ''}
+      <ol class="sources">${day.sources.map((x) => `<li><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.label)}</a></li>`).join('')}</ol>
+      <p class="sources-asof">Editions current as of ${SOURCES_AS_OF}. Drafted with AI assistance from these sources; <a href="#/about">how Med100 is written</a>.</p></section>` : ''}
 
     <div class="topic-actions">
       <button id="btn-mastery" class="btn btn-outline">Test yourself</button>

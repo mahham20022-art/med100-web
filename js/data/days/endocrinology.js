@@ -169,7 +169,7 @@ In diabetes, insulin and sulfonylureas are the main causes; kidney impairment, m
       'Hypoglycaemia can mimic stroke with focal weakness',
       'Glucagon is less effective in alcohol-related or starvation hypoglycaemia because glycogen stores are depleted',
     ],
-    sources: [web('JBDS: The hospital management of hypoglycaemia in adults with diabetes mellitus', 'https://abcd.care/joint-british-diabetes-societies-jbds-inpatient-care-group'), pm('ADA Standards of Care in Diabetes 2025 Glycemic Goals and Hypoglycemia')],
+    sources: [web('JBDS: The hospital management of hypoglycaemia in adults with diabetes mellitus', 'https://abcd.care/joint-british-diabetes-societies-jbds-inpatient-care-group'), pm('ADA Standards of Care in Diabetes 2026 Glycemic Goals and Hypoglycemia')],
     questions: [
       { stem: 'Which symptom is neuroglycopenic rather than autonomic?', options: ['Confusion', 'Sweating', 'Tremor', 'Palpitations'], correct: 0, explanation: 'Neuroglycopenic symptoms reflect brain glucose deprivation.', difficulty: 'Foundational' },
       { stem: 'An unconscious patient with hypoglycaemia should receive:', options: ['Intravenous glucose or glucagon', 'Oral glucose tablets', 'Insulin', 'Observation only'], correct: 0, explanation: 'Oral treatment is unsafe when the airway is not protected.', difficulty: 'Foundational' },

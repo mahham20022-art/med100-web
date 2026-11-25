@@ -681,3 +681,4 @@ input[type=range]{width:100%;accent-color:var(--signal)}
 .sk-d.today small{color:var(--ink)}
 .sk-note{margin:12px 0 0;font-size:12.5px;color:var(--muted)}
 @media (max-width:420px){.sk{flex-wrap:wrap}.sk .btn{width:100%}}
+.sources-asof{margin:10px 0 0;font-size:13px;color:var(--muted)}

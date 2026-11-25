@@ -4,11 +4,11 @@ import { nice, pm, web } from './_src.js';
 const ESC = (t) => web(`ESC Clinical Practice Guidelines: ${t}`, 'https://www.escardio.org/Guidelines/Clinical-Practice-Guidelines');
 
 export const EARLY_SOURCES = {
-  'cardio-hf-1': [ESC('2021 Guidelines for the diagnosis and treatment of acute and chronic heart failure (2023 focused update)'), nice('ng106', 'Chronic heart failure in adults: diagnosis and management')],
+  'cardio-hf-1': [web('2026 ESC Guidelines for the management of heart failure (Eur Heart J, Aug 2026)', 'https://www.escardio.org/Guidelines/Clinical-Practice-Guidelines/Heart-Failure'), nice('ng106', 'Chronic heart failure in adults: diagnosis and management')],
   'pulm-asthma-1': [web('Global Initiative for Asthma (GINA) 2025 Strategy Report', 'https://ginasthma.org/reports/'), nice('ng245', 'Asthma: diagnosis, monitoring and chronic asthma management (BTS, NICE, SIGN)')],
   'nephro-aki-1': [web('KDIGO Clinical Practice Guideline for Acute Kidney Injury (2012)', 'https://kdigo.org/guidelines/acute-kidney-injury/'), nice('ng148', 'Acute kidney injury: prevention, detection and management')],
-  'endo-dm-1': [web('ADA Standards of Care in Diabetes — 2025', 'https://diabetesjournals.org/care/issue/48/Supplement_1'), nice('ng28', 'Type 2 diabetes in adults: management')],
-  'neuro-stroke-1': [web('European Stroke Organisation guidelines', 'https://eso-stroke.org/guidelines/eso-guideline-directory/'), nice('ng128', 'Stroke and transient ischaemic attack in over 16s: diagnosis and initial management'), pm('2019 Update to the 2018 Guidelines for the Early Management of Acute Ischemic Stroke AHA/ASA')],
+  'endo-dm-1': [web('ADA Standards of Care in Diabetes — 2026', 'https://diabetesjournals.org/care/issue/49/Supplement_1'), nice('ng28', 'Type 2 diabetes in adults: management')],
+  'neuro-stroke-1': [web('2026 AHA/ASA Guideline for the Early Management of Patients With Acute Ischemic Stroke (Stroke, Jan 2026)', 'https://pubmed.ncbi.nlm.nih.gov/41582814/'), web('European Stroke Organisation guidelines', 'https://eso-stroke.org/guidelines/eso-guideline-directory/'), nice('ng128', 'Stroke and transient ischaemic attack in over 16s: diagnosis and initial management')],
   'id-sepsis-1': [pm('Singer M et al. The Third International Consensus Definitions for Sepsis and Septic Shock (Sepsis-3). JAMA 2016'), pm('Surviving Sepsis Campaign: International Guidelines for Management of Sepsis and Septic Shock 2021')],
   'pulm-copd-1': [web('Global Initiative for Chronic Obstructive Lung Disease (GOLD) 2025 Report', 'https://goldcopd.org/2025-gold-report/'), nice('ng115', 'Chronic obstructive pulmonary disease in over 16s: diagnosis and management')],
   'gi-ibd-1': [pm('British Society of Gastroenterology consensus guidelines on the management of inflammatory bowel disease in adults. Gut 2019'), pm('ECCO Guidelines on Therapeutics in Crohn\'s Disease: Medical Treatment 2024')],

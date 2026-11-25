@@ -23,9 +23,12 @@ const EARLY_DAYS = [
     ],
     coreContent: `Heart failure is a clinical syndrome, not a single disease — the heart cannot pump enough blood to meet the body's demands, or can only do so at abnormally high filling pressures.
 
-Two broad categories matter clinically:
-- HFrEF (reduced ejection fraction, typically <40%) — a problem of contraction (systolic dysfunction).
-- HFpEF (preserved ejection fraction, typically >=50%) — the chamber contracts normally but fails to relax and fill properly (diastolic dysfunction).
+The 2026 ESC guideline uses two phenotypes, defined by left ventricular ejection fraction (LVEF):
+- HFrEF (LVEF below 50%) — mainly a problem of contraction (systolic dysfunction).
+- HFpEF (LVEF 50% or above, with objective structural or functional cardiac abnormality) — the chamber contracts but is stiff and fills at high pressure (diastolic dysfunction).
+Older guidelines (ESC 2021, ACC/AHA 2022) used a third, middle group, HFmrEF (LVEF 41–49%); ESC 2026 folds it into HFrEF because these patients respond to the same treatments. You will still meet the three-group terms in papers and exams.
+
+ESC 2026 also adopts stages A–D, from people at risk (A) and those with structural disease but no symptoms (B) to symptomatic (C) and advanced (D) heart failure, to push prevention and earlier treatment.
 
 Left-sided failure backs up into the lungs: dyspnea, orthopnea, paroxysmal nocturnal dyspnea, crackles.
 Right-sided failure backs up into the systemic venous system: peripheral edema, jugular venous distension, hepatomegaly.
@@ -144,7 +147,7 @@ Diagnosis in both rests on the same lab categories — fasting plasma glucose, o
     ],
     coreContent: `Stroke is a sudden neurologic deficit from disrupted blood supply to the brain — but the two broad mechanisms are treated in opposite directions, which is why imaging must come first.
 
-Ischemic stroke (~85% of strokes) results from a blocked vessel (thrombosis or embolism) cutting off blood supply to brain tissue. Time-sensitive reperfusion strategies exist, but only within defined time windows from symptom onset.
+Ischemic stroke (~85% of strokes) results from a blocked vessel (thrombosis or embolism) cutting off blood supply to brain tissue. Reperfusion works only within time windows counted from last-known-well. The 2026 AHA/ASA guideline endorses either alteplase or tenecteplase for intravenous thrombolysis in the 4.5-hour window, allows thrombolysis later in selected patients chosen by advanced imaging, and recommends endovascular thrombectomy for eligible large-vessel occlusions, now including basilar artery occlusion and selected patients with large ischemic cores.
 
 Hemorrhagic stroke results from bleeding into brain tissue (intracerebral) or into the subarachnoid space, often from hypertension, vascular malformations, or aneurysm rupture. Giving a clot-dissolving therapy intended for ischemic stroke to a hemorrhagic stroke patient would be actively harmful — which is precisely why a non-contrast CT head is the mandatory first step before any time-sensitive intervention: it reliably distinguishes "bleeding" from "no bleeding" even though early ischemia can be subtle on CT.`,
     keyConcepts: [
@@ -529,6 +532,9 @@ const DAYS = [
 
 // Any day not written yet falls back to an explicit "coming soon" stub.
 const byDay = new Map(DAYS.map((d) => [d.day, d]));
+
+/** Month the listed source editions were last brought up to date. */
+export const SOURCES_AS_OF = 'November 2026';
 
 /** True only when the editor has checked the day against its sources. */
 export function isReviewed(day) {

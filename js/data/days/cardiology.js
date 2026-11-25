@@ -79,7 +79,7 @@ Clues to secondary hypertension include onset at a young age, resistant hyperten
     coreContent: `Atrial fibrillation (AF) is the commonest sustained arrhythmia. Disorganised atrial activity produces an irregularly irregular ventricular response with no consistent P waves. The atria do not contract effectively, and blood stasis in the left atrial appendage allows thrombus to form, which is why AF is a major cause of cardioembolic stroke.
 
 Management runs through three questions:
-- Stroke prevention: estimate thromboembolic risk with a validated score (for example CHA₂DS₂-VASc) and decide on oral anticoagulation, while identifying and correcting modifiable bleeding risk factors.
+- Stroke prevention: estimate thromboembolic risk with a validated score (CHA₂DS₂-VA in the 2024 ESC guideline, which drops sex as a risk factor; CHA₂DS₂-VASc in older and US guidance) and decide on oral anticoagulation, while identifying and correcting modifiable bleeding risk factors.
 - Rate control: slow the ventricular response to relieve symptoms and protect ventricular function.
 - Rhythm control: restore and maintain sinus rhythm when it is likely to help the patient, for example persistent symptoms or recent-onset AF.
 
