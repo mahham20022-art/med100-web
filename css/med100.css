@@ -714,3 +714,7 @@ input[type=range]{width:100%;accent-color:var(--signal)}
 .wm-med{background:linear-gradient(160deg,#4CC3B0 0%,#2E9C8C 45%,#2F6FC0 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
 .wm-num{background:linear-gradient(160deg,#FF9A4D 0%,#F0603A 45%,#D9452F 100%);-webkit-background-clip:text;background-clip:text;color:transparent!important;font-style:normal}
 .nav-brand .wm-med{background:linear-gradient(160deg,#9BE7DA 0%,#4CC3B0 45%,#3B8FE0 100%);-webkit-background-clip:text;background-clip:text}
+
+.gf{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.gf a{display:block;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);text-decoration:none;color:var(--ink)}
+.gf a:hover{border-color:var(--ink)}.gf small{display:block;font:600 10.5px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--signal-2);margin-bottom:3px}.gf b{font-weight:600;font-size:15px;line-height:1.35}

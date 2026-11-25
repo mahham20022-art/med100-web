@@ -1,5 +1,6 @@
 import { state, subscribe } from '../state.js';
 import { CURRICULUM, getDay, isReviewed, SOURCES_AS_OF } from '../data/curriculum.js';
+import { relatedFor } from '../data/days/related.js';
 import { markDayComplete } from '../core/sync.js';
 import { computeStreaks } from '../core/streaks.js';
 import { dailyStreak } from '../core/activity.js';
@@ -260,6 +261,8 @@ function detailTemplate(day) {
     <section class="sec"><div class="sec-h"><span>04</span><h2>Clinical pearls</h2></div>
       <div class="pearls">${day.clinicalPearls.map((p) => `<div class="pearl">${PEARL}${esc(p)}</div>`).join('')}</div></section>
 
+    ${relatedFor(day.topicId).length ? `<section class="sec go-further"><div class="sec-h"><span>→</span><h2>Go further on The Tract</h2></div>
+      <div class="gf">${relatedFor(day.topicId).map((r) => `<a href="${esc(r.url)}?ref=med100" target="_blank" rel="noopener"><small>${esc(r.kind)}</small><b>${esc(r.label)}</b></a>`).join('')}</div></section>` : ''}
     ${day.sources && day.sources.length ? `<section class="sec"><div class="sec-h"><span>05</span><h2>Sources</h2></div>
       <ol class="sources">${day.sources.map((x) => `<li><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.label)}</a></li>`).join('')}</ol>
       <p class="sources-asof">Editions current as of ${SOURCES_AS_OF}. Drafted with AI assistance from these sources; <a href="#/about">how Med100 is written</a>.</p></section>` : ''}
