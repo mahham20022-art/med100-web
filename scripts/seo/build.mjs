@@ -53,7 +53,8 @@ function page({ path, title, desc, body, R, ld }) {
 <meta property="og:type" content="article"><meta property="og:title" content="${E(title)}"><meta property="og:description" content="${E(desc)}"><meta property="og:url" content="${BASE}/${path}"><meta property="og:site_name" content="Med100 · The Tract">
 <meta name="author" content="The Tract · Independent Neurology Press"><meta name="theme-color" content="#FAF6EF">
 <link rel="icon" type="image/svg+xml" href="${R}icons/med100-mark.svg"><style>${CSS.replace(/__R__/g, R)}</style>
-<script type="application/ld+json">${JSON.stringify(ld)}</script></head><body>
+<script type="application/ld+json">${JSON.stringify(ld)}</script>
+<script>window.goatcounter={path:function(p){return 'med100'+p.replace(/^\/med100-web/,'')}}</script><script data-goatcounter="https://naaajm.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script></head><body>
 <header><a class="brand" href="${R}days/">${MARK}<span>Med<i>100</i></span></a><a class="cta" href="${R}">Open the app</a></header>
 <main>${body}</main>
 <footer>Med100 is a free study aid published by <a href="https://thetract.org/">The Tract · Independent Neurology Press</a>. Editor: Dr Mohamed Najm, neurologist in neurocritical care and neurological emergencies. Educational content only, not medical advice; check anything you would act on against current guidelines. <a href="mailto:contact@thetract.org">contact@thetract.org</a></footer>

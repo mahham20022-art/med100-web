@@ -46,6 +46,8 @@ async function resolve() {
     }
     currentCleanup = null;
   }
+  // GoatCounter (The Tract's privacy-friendly counter, no cookies): one hit per screen.
+  countView(path);
   for (const r of routes) {
     const match = r.regex.exec(path);
     if (match) {
@@ -78,4 +80,12 @@ export function startRouter(defaultPath = '/dashboard') {
 
 export function currentRoutePath() {
   return currentPath().split('?')[0];
+}
+
+function countView(path, tries = 0) {
+  if (/\.github\.io$/.test(location.hostname) || location.hostname === 'localhost') return;
+  try {
+    if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: 'med100' + path, title: 'Med100 ' + path });
+    else if (tries < 6) setTimeout(() => countView(path, tries + 1), 700);   /* count.js still loading */
+  } catch (e) { /* counter blocked */ }
 }
