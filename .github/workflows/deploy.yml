@@ -14,15 +14,28 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Checks run before anything is published: a failing check stops the deploy.
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate app, curriculum and question bank
+        run: node scripts/validate-static.mjs
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  # Separate job, as in GitHub's reference workflow: the artifact is registered
+  # by the time this starts (a single job intermittently could not find it).
   deploy:
+    needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
       - id: deployment
         uses: actions/deploy-pages@v4
