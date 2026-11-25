@@ -1,6 +1,7 @@
 import { state, subscribe } from '../state.js';
 import { addNote, deleteNote } from '../core/sync.js';
 import { esc } from '../core/dom.js';
+import { toast } from './guest-link.js';
 
 export function renderNotes(root) {
   const paint = () => {
@@ -19,6 +20,11 @@ export function renderNotes(root) {
       } catch (error) {
         console.error('Failed to add note:', error);
       }
+    });
+    root.querySelector('#btn-copy-notes')?.addEventListener('click', async () => {
+      const md = '# Med100 notes\n\n' + state.notes.map((n) => `## ${n.createdAt ? new Date(n.createdAt).toLocaleString() : ''}\n\n${n.text}\n`).join('\n');
+      try { await navigator.clipboard.writeText(md); toast(`Copied ${state.notes.length} note${state.notes.length === 1 ? '' : 's'} as Markdown`); }
+      catch { const t = document.createElement('textarea'); t.value = md; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); toast('Copied as Markdown'); }
     });
     root.querySelectorAll('[data-delete]').forEach((btn) => {
       btn.addEventListener('click', async () => {
@@ -62,6 +68,7 @@ function template() {
       <textarea id="note-input" class="input" rows="3" placeholder="Write a note…" style="margin-bottom:var(--sp-3);"></textarea>
       <button id="btn-add-note" class="btn btn-primary">Add Note</button>
     </div>
+    ${state.notes.length ? `<div style="display:flex;justify-content:flex-end;margin:-4px 0 8px"><button id="btn-copy-notes" class="btn btn-outline btn-sm" style="width:auto">Copy all as Markdown</button></div>` : ''}
     ${list}
   `;
 }

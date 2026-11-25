@@ -8,7 +8,7 @@ import { getQuestionsForTopic } from '../data/questions.js';
 import { relativeTime } from '../core/time.js';
 import { esc } from '../core/dom.js';
 import { navigate } from '../router.js';
-import { dueFlashcards, overdueCount } from '../core/spaced-repetition.js';
+import { dueFlashcards, overdueCount, weakFlashcards } from '../core/spaced-repetition.js';
 import { icon } from '../core/icons.js';
 import { rhythmStrip, beatLine } from '../core/rhythm.js';
 import { hasGuestProgress, dashboardLinkDismissed, guestLinkCard, wireGuestLink } from './guest-link.js';
@@ -72,7 +72,8 @@ function hero(nextDay, today, isDone) {
   return `<section class="hero">${top}
     <div class="hero-copy"><p class="hero-hello">${hello} Today’s topic:</p>
       <h2>${esc(today.title)}</h2>
-      <div class="hero-meta"><span>${esc(today.system)}</span><span>≈ ${mins} min</span>${qs ? `<span>${qs} questions</span>` : ''}</div></div>
+      <div class="hero-meta"><span>${esc(today.system)}</span><span>≈ ${mins} min</span>${qs ? `<span>${qs} questions</span>` : ''}</div>
+      ${(today.objectives || []).length ? `<ul class="hero-learn" aria-label="By the end you can">${today.objectives.slice(0, 3).map((o) => `<li>${esc(o)}</li>`).join('')}</ul>` : ''}</div>
     <div class="hero-act">${beat}<button id="btn-continue" class="btn btn-signal" data-go="/topic/${nextDay}">Start day ${nextDay} <span aria-hidden="true">→</span></button></div>
   </section>`;
 }
@@ -87,7 +88,7 @@ function rhythmPanel(total, current, nextDay, isDone) {
   const vitals = [
     `<div class="vital"><b>${total}<small>/100</small></b><span>days written</span></div>`,
     `<div class="vital"><b>${phase.n}<small>/5</small></b><span>${phase.name} phase</span></div>`,
-    `<div class="vital"><b>${100 - total}</b><span>days ahead</span></div>`,
+    activeVital(),
     acc !== null ? `<div class="vital"><b>${acc}<small>%</small></b><span>of ${answered} answers right</span></div>` : '',
   ].join('');
   return `<section class="panel rhythm-wrap">
@@ -100,12 +101,32 @@ function rhythmPanel(total, current, nextDay, isDone) {
 
 function dueSection() {
   if (!state.completedDays.length) return '';
-  const due = dueFlashcards().length, overdue = overdueCount();
-  if (!due) return '';
+  const due = dueFlashcards().length, overdue = overdueCount(), weak = weakFlashcards().length;
+  if (!due && !weak) return '';
+  const line = due
+    ? `${overdue ? `${overdue} overdue · ` : ''}about ${Math.max(1, Math.round(due * 0.5))} min${weak ? ` · <em>${weak} weak</em>` : ''}`
+    : `Nothing due · <em>${weak} weak spot${weak === 1 ? '' : 's'}</em> to practise`;
   return `<section class="panel due-wrap"><div class="due">
-    <div class="due-n">${due}</div>
-    <div class="due-copy"><strong>Spaced review is due</strong><span>${overdue ? `${overdue} overdue · ` : ''}about ${Math.max(1, Math.round(due * 0.4))} min</span></div>
-    <button class="btn btn-primary btn-sm" data-go="/reviews">Review</button></div></section>`;
+    <div class="due-n">${due || weak}</div>
+    <div class="due-copy"><strong>${due ? `${due === 1 ? 'Question' : 'Questions'} to recall` : 'Weak spots'}</strong><span>${line}</span></div>
+    <button class="btn btn-primary btn-sm" data-go="/reviews">${due ? 'Recall' : 'Practise'}</button></div></section>`;
+}
+
+// Consistency over the last 14 days instead of a streak that breaks after
+// one night on call: any study activity (a question answered, a card
+// reviewed, a teach-back, a note) counts the day.
+function activeDays(windowDays = 14) {
+  const since = Date.now() - windowDays * 86400000, days = new Set();
+  const add = (v) => { const t = ms(v); if (t >= since) days.add(new Date(t).toDateString()); };
+  state.quizAttempts.forEach((a) => add(a.answeredAt));
+  state.teachingSessions.forEach((s) => add(s.completedAt));
+  state.flashcardSchedule.forEach((f) => add(f.lastReviewedAt));
+  state.notes.forEach((n) => add(n.createdAt));
+  return days.size;
+}
+function activeVital() {
+  const n = activeDays();
+  return `<div class="vital${n >= 10 ? ' is-signal' : ''}"><b>${n}<small>/14</small></b><span>active days, last two weeks</span></div>`;
 }
 
 function toolsSection(nextDay) {
