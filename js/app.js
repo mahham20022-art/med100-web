@@ -23,20 +23,43 @@ import { renderProfile } from './features/profile.js';
 
 const $ = (id) => document.getElementById(id);
 
+// The splash is the loading screen: it stays at least long enough for the
+// trace to finish writing (shorter for returning visitors), then fades.
+const SPLASH_T0 = performance.now();
+let SPLASH_MIN = 1750;
+try {
+  if (localStorage.getItem('med100_seen') === '1') { SPLASH_MIN = 850; $('loading-screen').classList.add('is-quick'); }
+  localStorage.setItem('med100_seen', '1');
+} catch (e) { /* private mode */ }
+if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) SPLASH_MIN = 200;
+let splashGone = false;
+function leaveSplash(then) {
+  if (splashGone) { then(); return; }
+  const wait = Math.max(0, SPLASH_MIN - (performance.now() - SPLASH_T0));
+  setTimeout(() => {
+    then();
+    splashGone = true;
+    const el = $('loading-screen');
+    el.classList.add('is-leaving');
+    setTimeout(() => el.classList.add('hidden'), 600);
+  }, wait);
+}
+
 function showLoading() {
-  $('loading-screen').classList.remove('hidden');
   $('auth-screen').classList.add('hidden');
   $('app-shell').classList.remove('active');
 }
 function showAuth() {
-  $('loading-screen').classList.add('hidden');
-  $('auth-screen').classList.remove('hidden');
-  $('app-shell').classList.remove('active');
+  leaveSplash(() => {
+    $('auth-screen').classList.remove('hidden');
+    $('app-shell').classList.remove('active');
+  });
 }
 function showApp() {
-  $('loading-screen').classList.add('hidden');
-  $('auth-screen').classList.add('hidden');
-  $('app-shell').classList.add('active');
+  leaveSplash(() => {
+    $('auth-screen').classList.add('hidden');
+    $('app-shell').classList.add('active');
+  });
 }
 
 function authErrorBanner(message) {
@@ -94,6 +117,7 @@ function setupSubscriptions(uid) {
 
 function updateNavHighlight() {
   const path = currentRoutePath();
+  window.scrollTo(0, 0);
   document.querySelectorAll('.nav-btn').forEach((btn) => {
     const match = path === btn.dataset.route || (btn.dataset.routePrefix && path.startsWith(btn.dataset.routePrefix));
     if (match) btn.setAttribute('aria-current', 'page');
@@ -106,7 +130,7 @@ function registerRoutes() {
   const title = $('header-title');
 
   route('/dashboard', () => {
-    title.textContent = 'Med100';
+    title.textContent = 'Today';
     updateNavHighlight();
     return renderDashboard(view);
   });
@@ -121,7 +145,7 @@ function registerRoutes() {
     return renderTopics(view);
   });
   route('/topic/:day', ({ day }) => {
-    title.textContent = 'Today’s Topic';
+    title.textContent = 'Topic';
     updateNavHighlight();
     return renderTopicDetail(view, day);
   });
@@ -233,10 +257,9 @@ async function main() {
 
 main().catch((error) => {
   console.error('Fatal error:', error);
-  document.getElementById('loading-screen').innerHTML =
-    '<div style="text-align:center;color:#fff;"><p>Something went wrong.</p><p style="font-size:12px;opacity:0.8;margin-top:8px;">' +
+  document.getElementById('loading-screen').querySelector('.sp-stage').insertAdjacentHTML('beforeend', '<div class="sp-err"><p>Something went wrong.</p><p style="font-size:12px;opacity:0.8;margin-top:8px;">' +
     String(error.message).replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c])) +
-    '</p></div>';
+    '</p></div>');
 });
 
 if ('serviceWorker' in navigator) {

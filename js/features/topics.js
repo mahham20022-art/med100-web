@@ -4,6 +4,8 @@ import { markDayComplete } from '../core/sync.js';
 import { computeStreaks } from '../core/streaks.js';
 import { esc, qsa } from '../core/dom.js';
 import { navigate } from '../router.js';
+import { beatLine } from '../core/rhythm.js';
+import { readingMinutes } from './dashboard.js';
 
 export function renderTopics(root) {
   let query = '';
@@ -191,59 +193,75 @@ export function renderTopicDetail(root, dayParam) {
   return subscribe(paint);
 }
 
+// Turn the curriculum's plain-text core material into real structure:
+// paragraphs, bulleted lines ("- ") and numbered lines ("1. ").
+function proseHtml(text) {
+  const out = [];
+  let list = null;
+  const close = () => { if (list) { out.push(`<${list.tag}>${list.items.join('')}</${list.tag}>`); list = null; } };
+  for (const raw of String(text || '').split('\n')) {
+    const line = raw.trim();
+    if (!line) { close(); continue; }
+    const b = line.match(/^[-•]\s+(.*)$/), n = line.match(/^\d+[.)]\s+(.*)$/);
+    if (b || n) {
+      const tag = b ? 'ul' : 'ol';
+      if (!list || list.tag !== tag) { close(); list = { tag, items: [] }; }
+      list.items.push(`<li>${emph(esc((b || n)[1]))}</li>`);
+    } else { close(); out.push(`<p>${emph(esc(line))}</p>`); }
+  }
+  close();
+  return out.join('');
+}
+// "Term — explanation" and "Term: explanation" lead-ins become bold terms.
+function emph(html) {
+  html = html.replace(/&gt;=/g, '≥').replace(/&lt;=/g, '≤');
+  return html.replace(/^([^.—:]{2,48}?)(\s+—\s+|:\s+)/, '<strong>$1</strong>$2');
+}
+
+const PEARL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13h4l2-5 3 10 3-13 2 8h6"/></svg>';
+
 function detailTemplate(day) {
+  const back = `<a class="back-link" href="#/topics">← All topics</a>`;
   if (day.comingSoon) {
-    return `
-      <div class="card">
-        <span class="pill">Day ${day.day}</span>
-        <h2 style="margin-top:var(--sp-3);">Coming soon</h2>
-        <p style="color:var(--color-text-secondary);margin-top:var(--sp-2);">
-          This day’s content hasn’t been written yet. The 100-day structure is ready for it —
-          there’s nothing fake displayed in its place.
-        </p>
-      </div>
-    `;
+    return `<div class="topic">${back}<div class="soon">
+      <span class="eyebrow">Day ${String(day.day).padStart(2, '0')}</span>
+      <svg class="topic-beat" viewBox="0 0 300 34" preserveAspectRatio="none" aria-hidden="true"><path d="M0,24 L300,24"/></svg>
+      <h2>This day is being written.</h2>
+      <p>The 100-day structure is in place; this topic’s content isn’t published yet. Nothing is shown in its place.</p>
+    </div></div>`;
   }
 
   const isDone = state.completedDays.includes(day.day);
   const { total } = computeStreaks(state.completedDays);
   const isCurrent = day.day === total + 1 && !isDone;
+  const mins = readingMinutes(day);
+  const pad = String(day.day).padStart(2, '0');
 
-  return `
-    <span class="pill">${esc(day.system)}</span>
-    <h2 style="margin:var(--sp-2) 0 var(--sp-4);font-size:var(--fs-xl);">${esc(day.title)}</h2>
+  return `<article class="topic">
+    ${back}
+    <div class="topic-kicker"><b>Day ${pad}</b><span>${esc(day.system)}</span><span>≈ ${mins} min</span></div>
+    <h1>${esc(day.title)}</h1>
+    <svg class="topic-beat" viewBox="0 0 300 34" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="${beatLine(300, 3).replace(/,(\d+(?:\.\d+)?)/g, (m, y) => ',' + (+y - 7).toFixed(1))}"/></svg>
+    ${isDone ? '<div class="topic-status"><span class="ok">✓ Day complete</span><span>· written into your rhythm</span></div>' : ''}
 
-    <div class="card">
-      <div class="card-title">Learning Objectives</div>
-      <ul>${day.objectives.map((o) => `<li style="margin-bottom:var(--sp-2);">• ${esc(o)}</li>`).join('')}</ul>
+    <section class="sec"><div class="sec-h"><span>01</span><h2>By the end you can</h2></div>
+      <ol class="objectives">${day.objectives.map((o) => `<li>${esc(o)}</li>`).join('')}</ol></section>
+
+    <section class="sec"><div class="sec-h"><span>02</span><h2>Core material</h2></div>
+      <div class="prose">${proseHtml(day.coreContent)}</div></section>
+
+    <section class="sec"><div class="sec-h"><span>03</span><h2>Key concepts</h2></div>
+      <ul class="concepts">${day.keyConcepts.map((k) => `<li>${emph(esc(k))}</li>`).join('')}</ul></section>
+
+    <section class="sec"><div class="sec-h"><span>04</span><h2>Clinical pearls</h2></div>
+      <div class="pearls">${day.clinicalPearls.map((p) => `<div class="pearl">${PEARL}${esc(p)}</div>`).join('')}</div></section>
+
+    <div class="topic-actions">
+      <button id="btn-mastery" class="btn btn-outline">Test yourself</button>
+      <button id="btn-teach" class="btn btn-outline">Teach it back</button>
+      ${isDone ? '' : isCurrent ? `<button id="btn-complete" class="btn btn-signal wide"><span class="dot" style="background:#fff;box-shadow:none"></span>Write day ${day.day} into my rhythm</button>` : ''}
     </div>
-
-    <div class="card">
-      <div class="card-title">Core Material</div>
-      <div style="white-space:pre-wrap;line-height:1.65;">${esc(day.coreContent)}</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Key Concepts</div>
-      <ul>${day.keyConcepts.map((k) => `<li style="margin-bottom:var(--sp-2);">• ${esc(k)}</li>`).join('')}</ul>
-    </div>
-
-    <div class="card" style="border-left:3px solid var(--color-gold);">
-      <div class="card-title" style="color:var(--color-gold);">Clinical Pearls</div>
-      <ul>${day.clinicalPearls.map((p) => `<li style="margin-bottom:var(--sp-2);">★ ${esc(p)}</li>`).join('')}</ul>
-    </div>
-
-    <button id="btn-mastery" class="btn btn-outline" style="margin-bottom:var(--sp-2);">Test Yourself — Question Practice</button>
-    <button id="btn-teach" class="btn btn-outline" style="margin-bottom:var(--sp-4);">Teach It Back — Teaching Mode</button>
-
-    ${
-      isDone
-        ? `<div class="success-banner">✓ Marked complete</div>`
-        : isCurrent
-          ? `<button id="btn-complete" class="btn btn-primary">Mark This Day Complete</button>`
-          : ''
-    }
-  `;
+  </article>`;
 }
 
 function wireDetail(day) {

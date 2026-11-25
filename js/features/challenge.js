@@ -4,6 +4,7 @@ import { CURRICULUM } from '../data/curriculum.js';
 import { markDayComplete } from '../core/sync.js';
 import { esc } from '../core/dom.js';
 import { navigate } from '../router.js';
+import { rhythmStrip } from '../core/rhythm.js';
 
 const TOTAL_DAYS = 100;
 
@@ -65,15 +66,13 @@ function template() {
     <div class="page-heading">
       <span class="page-eyebrow">YOUR 100-DAY PLAN</span>
       <h2>The Challenge</h2>
-      <p>Build consistency. Complete one focused step at a time.</p>
+      <p>Each finished day writes one beat. Five phases, one rhythm.</p>
     </div>
-    <div class="card" style="display:flex;align-items:center;justify-content:space-between;">
-      <div>
-        <div class="card-title" style="margin-bottom:0;">Progress</div>
-        <strong style="font-size:var(--fs-lg);color:var(--color-brand);">${total}/${TOTAL_DAYS}</strong>
-      </div>
-      ${total < TOTAL_DAYS && !currentDay?.comingSoon ? `<button id="btn-mark-done" class="btn btn-primary" style="width:auto;">Mark Today as Done</button>` : total < TOTAL_DAYS ? `<span class="challenge-content-pending">Next topic is being prepared</span>` : ''}
-    </div>
+    <section class="panel rhythm-wrap" style="margin-bottom:16px">
+      <div class="panel-head"><h3>${total}<span style="font:500 15px var(--f-ui);color:var(--muted)"> / ${TOTAL_DAYS} days</span></h3>${total < TOTAL_DAYS && !currentDay?.comingSoon ? `<button id="btn-mark-done" type="button">Mark day ${nextDay} done</button>` : total < TOTAL_DAYS ? `<span class="challenge-content-pending">Next topic is being prepared</span>` : ''}</div>
+      ${rhythmStrip({ completed: state.completedDays, skipped: state.skippedDays || [], today: total >= TOTAL_DAYS ? 0 : nextDay, cols: 10, id: 'rcn' }).replace('rs-box', 'rs-box narrow')}
+      ${rhythmStrip({ completed: state.completedDays, skipped: state.skippedDays || [], today: total >= TOTAL_DAYS ? 0 : nextDay, cols: 25, id: 'rcw' }).replace('rs-box', 'rs-box wide')}
+    </section>
     ${phaseMarkup}
   `;
 }

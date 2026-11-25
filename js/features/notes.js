@@ -50,7 +50,7 @@ function template() {
         </div>`,
         )
         .join('')
-    : `<div class="empty-state">No notes yet — write your first one below.</div>`;
+    : `<div class="empty-state">No notes yet — write your first one above.</div>`;
 
   return `
     <div class="page-heading">

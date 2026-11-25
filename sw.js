@@ -3,16 +3,13 @@
 // but the old broken version kept showing" earlier in this same
 // project's history. Network-first means: online, you always get the
 // current deploy; offline, you fall back to whatever was last cached.
-const CACHE_NAME = 'med100-shell-v1';
+const CACHE_NAME = 'med100-rhythm-v1';
 const SHELL_FILES = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './css/tokens.css',
-  './css/base.css',
-  './css/layout.css',
-  './css/components.css',
-  './css/responsive.css',
+  './css/med100.css',
+  './js/core/rhythm.js',
   './js/app.js',
   './js/router.js',
   './js/state.js',
@@ -48,7 +45,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((names) =>
-      Promise.all(names.filter((n) => n !== CACHE_NAME).map((n) => caches.delete(n))),
+      Promise.all(names.filter((n) => n.startsWith('med100-') && n !== CACHE_NAME).map((n) => caches.delete(n))),
     ),
   );
   self.clients.claim();

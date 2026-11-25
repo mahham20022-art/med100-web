@@ -1,135 +1,169 @@
-// Dashboard V2.0 — real user data only; presentation is isolated from state logic.
+// Dashboard — "Rhythm". Today's day is the hero; the 100 days are a
+// rhythm strip the learner writes; numbers appear only when they say
+// something (no rows of zeros for a new learner).
 import { state, subscribe } from '../state.js';
 import { computeStreaks } from '../core/streaks.js';
-import { streakMessage } from '../data/demo-data.js';
 import { getDay, getDayByTopicId } from '../data/curriculum.js';
-import { relativeDay, relativeTime } from '../core/time.js';
+import { getQuestionsForTopic } from '../data/questions.js';
+import { relativeTime } from '../core/time.js';
 import { esc } from '../core/dom.js';
 import { navigate } from '../router.js';
 import { dueFlashcards, overdueCount } from '../core/spaced-repetition.js';
 import { icon } from '../core/icons.js';
+import { rhythmStrip, beatLine } from '../core/rhythm.js';
 
 const TOTAL_DAYS = 100;
+let drawn = false; // animate the strip once per session, not on every data refresh
 
 export function renderDashboard(root) {
-  const paint = () => { root.innerHTML = template(); wire(root); };
+  const paint = () => { root.innerHTML = template(); wire(root); drawn = true; };
   paint();
   return subscribe(paint);
 }
 
 function greeting() {
   const h = new Date().getHours();
-  if (h < 12) return 'Good morning';
-  if (h < 18) return 'Good afternoon';
-  return 'Good evening';
+  return h < 5 ? 'Late shift' : h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
 }
 
-function welcomeSection() {
-  const name = state.user?.isAnonymous ? 'Guest' : state.user?.email?.split('@')[0] || 'there';
-  const dateStr = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
-  return `
-    <p class="intro-kicker">MED100 · THE 100-DAY STUDY</p>
-    <p class="intro-date">${esc(dateStr)}</p>
-    <h2>${greeting()}, ${esc(name)}.</h2>
-    <p class="intro-subtitle">A clear plan. A little progress, every day.</p>
-  `;
+function firstName() {
+  const u = state.user;
+  if (!u || u.isAnonymous) return '';
+  const n = (u.displayName || '').trim().split(/\s+/)[0];
+  if (n) return n;
+  const e = (u.email || '').split('@')[0].split(/[._-]/)[0];
+  return e ? e[0].toUpperCase() + e.slice(1) : '';
 }
 
-function todaysMissionSection(nextDay, today, isDone) {
-  if (isDone) return `<div class="card card-mission"><div class="card-title">Journey Complete</div><p>You've completed all 100 days. Revisit any topic any time from the Topics tab.</p></div>`;
-  if (today.comingSoon) return `<div class="card card-mission"><div class="card-title">Today's Mission — Day ${nextDay}</div><p>This day's content isn't written yet.</p></div>`;
-  return `
-    <div class="card card-mission">
-      <div class="card-title">Today's Mission <span style="opacity:.7">/ DAY ${String(nextDay).padStart(2,'0')}</span></div>
-      <h3 style="font-family:var(--font-serif);font-size:clamp(25px,2.5vw,34px);font-weight:500;letter-spacing:-.04em;margin:18px 0 12px;max-width:520px;line-height:1.12">${esc(today.title)}</h3>
-      <span class="pill">${esc(today.system)}</span><span class="pill" style="margin-left:5px">~15 min</span>
-      <div><button id="btn-continue" class="btn btn-primary" style="margin-top:24px;width:auto;padding-left:22px;padding-right:22px">Continue today's learning <span aria-hidden="true">→</span></button></div>
-    </div>`;
+export function readingMinutes(day) {
+  if (!day || day.comingSoon) return 0;
+  const text = [day.coreContent, ...(day.objectives || []), ...(day.keyConcepts || []), ...(day.clinicalPearls || [])].join(' ');
+  const words = text.split(/\s+/).filter(Boolean).length;
+  const qs = day.topicId ? getQuestionsForTopic(day.topicId).length : 0;
+  return Math.max(5, Math.round(words / 190 + qs * 1.2));
 }
 
-function journeySection(total, nextDay) {
-  const radius = 80, circumference = 2 * Math.PI * radius;
-  const fraction = Math.min(total / TOTAL_DAYS, 1), offset = circumference * (1 - fraction);
-  const pct = Math.round(fraction * 100);
-  return `
-    <div class="card">
-      <div class="card-title">The 100-Day Journey</div>
-      <div class="ring" style="width:180px;height:180px">
-        <svg viewBox="0 0 180 180" role="img" aria-label="${pct}% of the 100-day journey completed">
-          <circle class="ring-track" cx="90" cy="90" r="${radius}"></circle>
-          <circle class="ring-fill" cx="90" cy="90" r="${radius}" style="stroke-dasharray:${circumference};stroke-dashoffset:${offset}"></circle>
-        </svg>
-        <div class="ring-center"><span class="big">${total}</span><span class="small">days completed</span></div>
-      </div>
-      <p style="margin-top:14px;font-weight:700;color:var(--color-gold)">${pct}% completed</p>
-      <p style="color:var(--color-text-secondary);font-size:var(--fs-sm)">${TOTAL_DAYS-total} days remaining</p>
-    </div>`;
+const pad = (n) => String(n).padStart(2, '0');
+
+function hero(nextDay, today, isDone) {
+  const date = new Date().toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
+  const name = firstName();
+  const hello = `${greeting()}${name ? `, ${esc(name)}` : ''}.`;
+  const top = `<div class="hero-top"><span class="hero-day">${isDone ? 'Day 100 · complete' : `Day ${pad(nextDay)} / 100`}</span><span class="hero-date">${esc(date)}</span></div>`;
+  const beat = `<svg class="hero-beat" viewBox="0 0 320 46" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="${beatLine(320, 4)}"/><circle cx="320" cy="31" r="4"/></svg>`;
+
+  if (isDone) {
+    return `<section class="hero hero-done">${top}<div class="hero-copy"><p class="hero-hello">${hello}</p>
+      <h2>One hundred days. The whole rhythm is yours.</h2></div>
+      <div class="hero-act">${beat}<button class="btn btn-signal" data-go="/topics">Revisit any topic</button></div></section>`;
+  }
+  if (today.comingSoon) {
+    return `<section class="hero">${top}<div class="hero-copy"><p class="hero-hello">${hello}</p>
+      <h2>Day ${nextDay} is being written.</h2>
+      <div class="hero-meta"><span>You are fully up to date</span></div></div>
+      <div class="hero-act">${beat}<button class="btn btn-signal" data-go="/reviews">Use the time to review</button></div></section>`;
+  }
+  const mins = readingMinutes(today);
+  const qs = getQuestionsForTopic(today.topicId).length;
+  return `<section class="hero">${top}
+    <div class="hero-copy"><p class="hero-hello">${hello} Today’s topic:</p>
+      <h2>${esc(today.title)}</h2>
+      <div class="hero-meta"><span>${esc(today.system)}</span><span>≈ ${mins} min</span>${qs ? `<span>${qs} questions</span>` : ''}</div></div>
+    <div class="hero-act">${beat}<button id="btn-continue" class="btn btn-signal" data-go="/topic/${nextDay}">Start day ${nextDay} <span aria-hidden="true">→</span></button></div>
+  </section>`;
 }
 
-function momentumSection(current) {
-  const questionsAnswered = state.quizAttempts.length;
-  const teachingSessions = state.teachingSessions.length;
-  return `<div class="card"><div class="card-title">Learning Momentum</div><div class="stat-grid">
-    <div class="stat-tile"><div class="value">${current}</div><div class="label">Consecutive study days</div></div>
-    <div class="stat-tile"><div class="value">${questionsAnswered}</div><div class="label">Questions answered</div></div>
-    <div class="stat-tile"><div class="value">${teachingSessions}</div><div class="label">Teaching sessions</div></div>
-  </div><p style="color:var(--color-text-secondary);font-size:var(--fs-sm);margin-top:12px">Last active: ${esc(relativeDay(state.lastActionDate))} — ${esc(streakMessage(current))}</p></div>`;
+function rhythmPanel(total, current, nextDay, isDone) {
+  const args = { completed: state.completedDays, skipped: state.skippedDays || [], today: isDone ? 0 : nextDay, animate: !drawn };
+  const answered = state.quizAttempts.length;
+  const PH = ['Foundation', 'Development', 'Integration', 'Mastery', 'Final'];
+  const pn = Math.min(5, Math.ceil(Math.max(1, isDone ? 100 : nextDay) / 20));
+  const phase = { n: pn, name: PH[pn - 1] };
+  const acc = answered ? Math.round(state.quizAttempts.filter((a) => a.isCorrect).length / answered * 100) : null;
+  const vitals = [
+    `<div class="vital"><b>${total}<small>/100</small></b><span>days written</span></div>`,
+    `<div class="vital"><b>${phase.n}<small>/5</small></b><span>${phase.name} phase</span></div>`,
+    `<div class="vital"><b>${100 - total}</b><span>days ahead</span></div>`,
+    acc !== null ? `<div class="vital"><b>${acc}<small>%</small></b><span>of ${answered} answers right</span></div>` : '',
+  ].join('');
+  return `<section class="panel rhythm-wrap">
+    <div class="panel-head"><h3>Your rhythm</h3><a href="#/challenge">The 100-day plan</a></div>
+    ${rhythmStrip({ ...args, cols: 10, maxRows: 3, id: 'rsn' }).replace('rs-box', 'rs-box narrow')}
+    ${rhythmStrip({ ...args, cols: 25, id: 'rsw' }).replace('rs-box', 'rs-box wide')}
+    <div class="vitals">${vitals}</div>
+  </section>`;
 }
 
-function dueReviewSection() {
-  const due = dueFlashcards(), overdue = overdueCount();
-  if (state.completedDays.length === 0) return '';
-  return `<div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:16px"><div><div class="card-title" style="margin-bottom:5px">Due for Review</div><strong style="font-family:var(--font-serif);font-size:34px;font-weight:500">${due.length}</strong><span style="color:var(--color-text-secondary);font-size:var(--fs-sm)"> due${overdue ? `, ${overdue} overdue` : ''}</span></div>${due.length ? '<button id="btn-start-review" class="btn btn-primary" style="width:auto">Start review →</button>' : ''}</div>`;
+function dueSection() {
+  if (!state.completedDays.length) return '';
+  const due = dueFlashcards().length, overdue = overdueCount();
+  if (!due) return '';
+  return `<section class="panel due-wrap"><div class="due">
+    <div class="due-n">${due}</div>
+    <div class="due-copy"><strong>Spaced review is due</strong><span>${overdue ? `${overdue} overdue · ` : ''}about ${Math.max(1, Math.round(due * 0.4))} min</span></div>
+    <button class="btn btn-primary btn-sm" data-go="/reviews">Review</button></div></section>`;
+}
+
+function toolsSection(nextDay) {
+  const d = Math.min(nextDay, TOTAL_DAYS);
+  const items = [
+    { route: '/mock-exam', ic: 'mcq', t: 'Mock exam', s: 'Timed, mixed topics' },
+    { route: `/teaching/${d}`, ic: 'teaching', t: 'Teach it back', s: 'Explain today’s topic' },
+    { route: '/challenge', ic: 'challenge', t: 'The plan', s: 'Five phases, 100 days' },
+  ];
+  return `<section class="tools-wrap"><div class="tools">${items.map((i) =>
+    `<button class="tool" data-go="${i.route}"><span class="tool-ic">${icon(i.ic)}</span><span><strong>${i.t}</strong><small>${i.s}</small></span></button>`).join('')}</div></section>`;
 }
 
 function performanceSection() {
-  if (!state.quizAttempts.length) return '';
-  const total=state.quizAttempts.length, correct=state.quizAttempts.filter(a=>a.isCorrect).length, pct=Math.round(correct/total*100);
-  const byTopic=new Map();
-  for(const a of state.quizAttempts){const e=byTopic.get(a.topicId)||{total:0,correct:0};e.total++;if(a.isCorrect)e.correct++;byTopic.set(a.topicId,e);}
-  const ranked=[...byTopic.entries()].filter(([,v])=>v.total>=2).map(([topicId,v])=>({title:getDayByTopicId(topicId)?.title||topicId,acc:v.correct/v.total})).sort((a,b)=>b.acc-a.acc);
-  const strongest=ranked[0], weakest=ranked.length>1&&ranked[ranked.length-1].acc<.8?ranked[ranked.length-1]:null;
-  return `<div class="card"><div class="card-title">Performance Snapshot</div><div class="stat-grid"><div class="stat-tile"><div class="value">${total}</div><div class="label">Questions answered</div></div><div class="stat-tile"><div class="value">${pct}%</div><div class="label">Correct</div></div></div>${strongest? `<p style="margin-top:12px;font-size:var(--fs-sm)">Strongest: <strong>${esc(strongest.title)}</strong> (${Math.round(strongest.acc*100)}%)</p>`:''}${weakest?`<p style="font-size:var(--fs-sm)">Needs work: <strong>${esc(weakest.title)}</strong> (${Math.round(weakest.acc*100)}%)</p>`:''}</div>`;
+  if (state.quizAttempts.length < 3) return '';
+  const total = state.quizAttempts.length, correct = state.quizAttempts.filter((a) => a.isCorrect).length, pct = Math.round(correct / total * 100);
+  const byTopic = new Map();
+  for (const a of state.quizAttempts) { const e = byTopic.get(a.topicId) || { total: 0, correct: 0 }; e.total++; if (a.isCorrect) e.correct++; byTopic.set(a.topicId, e); }
+  const ranked = [...byTopic.entries()].filter(([, v]) => v.total >= 2)
+    .map(([topicId, v]) => ({ title: getDayByTopicId(topicId)?.title || topicId, acc: v.correct / v.total })).sort((a, b) => b.acc - a.acc);
+  const strongest = ranked[0], weakest = ranked.length > 1 && ranked[ranked.length - 1].acc < 0.8 ? ranked[ranked.length - 1] : null;
+  return `<section class="panel perf-wrap"><div class="panel-head"><h3>Accuracy</h3><a href="#/progress">Details</a></div>
+    <div class="perf-line"><span>${correct} of ${total} correct</span><strong>${pct}%</strong></div>
+    <div class="perf-bar"><span style="width:${pct}%"></span></div>
+    ${strongest ? `<div class="perf-line"><span>Strongest</span><strong>${esc(strongest.title)}</strong></div>` : ''}
+    ${weakest ? `<div class="perf-line"><span>Needs work</span><strong>${esc(weakest.title)}</strong></div>` : ''}</section>`;
 }
 
-function quickAccessSection(nextDay) {
-  const items=[{label:'Challenge',route:'/challenge',icon:'challenge'},{label:'Topics',route:'/topics',icon:'topics'},{label:'MCQ',route:`/mastery/${Math.min(nextDay,TOTAL_DAYS)}`,icon:'mcq'},{label:'Teaching',route:`/teaching/${Math.min(nextDay,TOTAL_DAYS)}`,icon:'teaching'},{label:'Review',route:'/reviews',icon:'review'},{label:'Notes',route:'/notes',icon:'notes'},{label:'Analytics',route:'/progress',icon:'analytics'},{label:'Profile',route:'/profile',icon:'profile'}];
-  return `<div class="card"><div class="card-title">Your Workspace</div><div class="quick-grid">${items.map(it=>`<button data-quick="${it.route}" class="quick-tile"><span class="quick-tile-icon">${icon(it.icon)}</span><span class="quick-tile-label">${esc(it.label)}</span></button>`).join('')}</div></div>`;
-}
-
-function timestampMillis(value) {
-  if (typeof value === 'number') return value;
-  if (value && typeof value.toMillis === 'function') return value.toMillis();
-  if (value && typeof value.seconds === 'number') return value.seconds * 1000;
+function ms(v) {
+  if (typeof v === 'number') return v;
+  if (v && typeof v.toMillis === 'function') return v.toMillis();
+  if (v && typeof v.seconds === 'number') return v.seconds * 1000;
   return 0;
 }
 
-function recentActivitySection() {
-  const activities = [
-    ...state.quizAttempts.map(a => ({ time: timestampMillis(a.answeredAt), topicId: a.topicId, label: `Answered a question — ${a.isCorrect ? 'correct' : 'incorrect'}` })),
-    ...state.teachingSessions.map(s => ({ time: timestampMillis(s.completedAt), topicId: s.topicId, label: `Taught back "${s.topicTitle}" — scored ${s.masteryScore}` })),
-  ].filter(a => a.time > 0).sort((a, b) => b.time - a.time).slice(0, 5);
-  if (!activities.length) return '';
-  return `<div class="card"><div class="card-title">Recent Activity</div>${activities.map(a => `<button data-activity-topic="${esc(a.topicId)}" class="row" style="width:100%;text-align:left;margin-bottom:6px"><div class="row-main"><div class="row-title">${esc(a.label)}</div><div class="row-sub">${esc(relativeTime(a.time))}</div></div><span aria-hidden="true">↗</span></button>`).join('')}</div>`;
+function activitySection() {
+  const items = [
+    ...state.quizAttempts.map((a) => ({ t: ms(a.answeredAt), topicId: a.topicId, k: a.isCorrect ? '' : 'is-bad', label: `${a.isCorrect ? 'Right' : 'Missed'} · ${getDayByTopicId(a.topicId)?.title || 'Question'}` })),
+    ...state.teachingSessions.map((s) => ({ t: ms(s.completedAt), topicId: s.topicId, k: 'is-teach', label: `Taught back · ${s.topicTitle}` })),
+  ].filter((a) => a.t > 0).sort((a, b) => b.t - a.t).slice(0, 5);
+  if (!items.length) return '';
+  return `<section class="panel act-wrap"><div class="panel-head"><h3>Recent</h3></div>
+    ${items.map((a) => `<button class="activity" data-topic="${esc(a.topicId)}"><i class="${a.k}"></i><span>${esc(a.label)}</span><small>${esc(relativeTime(a.t))}</small></button>`).join('')}</section>`;
 }
 
 function template() {
-  const {current,total}=computeStreaks(state.completedDays), nextDay=Math.min(total+1,TOTAL_DAYS), today=getDay(nextDay), isDone=total>=TOTAL_DAYS;
-  const due=dueReviewSection(), performance=performanceSection(), recent=recentActivitySection();
-  return `<div class="dashboard-view"><section class="dashboard-welcome">${welcomeSection()}</section>
-    <section class="dashboard-mission">${todaysMissionSection(nextDay,today,isDone)}</section>
-    <section class="dashboard-journey">${journeySection(total,nextDay)}</section>
-    <section class="dashboard-momentum">${momentumSection(current)}</section>
-    ${due?`<section class="dashboard-due">${due}</section>`:''}
-    ${performance?`<section class="dashboard-performance">${performance}</section>`:''}
-    <section class="dashboard-quick">${quickAccessSection(nextDay)}</section>
-    ${recent?`<section class="dashboard-recent">${recent}</section>`:''}</div>`;
+  const { current, total } = computeStreaks(state.completedDays);
+  const nextDay = Math.min(total + 1, TOTAL_DAYS), today = getDay(nextDay), isDone = total >= TOTAL_DAYS;
+  return `<div class="dash">
+    ${hero(nextDay, today, isDone)}
+    ${rhythmPanel(total, current, nextDay, isDone)}
+    ${dueSection()}
+    ${toolsSection(nextDay)}
+    ${performanceSection()}
+    ${activitySection()}
+  </div>`;
 }
 
 function wire(root) {
-  const cont=root.querySelector('#btn-continue');
-  if(cont)cont.addEventListener('click',()=>{const {total}=computeStreaks(state.completedDays);navigate(`/topic/${Math.min(total+1,TOTAL_DAYS)}`);});
-  const review=root.querySelector('#btn-start-review');if(review)review.addEventListener('click',()=>navigate('/reviews'));
-  root.querySelectorAll('[data-quick]').forEach(btn=>btn.addEventListener('click',()=>navigate(btn.dataset.quick)));
-  root.querySelectorAll('[data-activity-topic]').forEach(btn=>btn.addEventListener('click',()=>{const day=getDayByTopicId(btn.dataset.activityTopic);if(day)navigate(`/topic/${day.day}`);}));
+  root.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => navigate(b.dataset.go)));
+  root.querySelectorAll('[data-topic]').forEach((b) => b.addEventListener('click', () => {
+    const day = getDayByTopicId(b.dataset.topic);
+    if (day) navigate(`/topic/${day.day}`);
+  }));
 }
