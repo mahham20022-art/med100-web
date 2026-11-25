@@ -27,7 +27,7 @@ export const QUESTIONS_BY_TOPIC = {
       stem: 'Which symptom is most specific for heart failure, as opposed to dyspnea in general?',
       options: ['Dyspnea on exertion', 'Orthopnea', 'Fatigue', 'Cough'],
       correct: 1,
-      explanation: 'Orthopnea (dyspnea when lying flat, relieved by sitting up) is far more specific for heart failure than exertional dyspnea alone, which has many causes.',
+      explanation: 'Orthopnoea is more suggestive of heart failure than exertional dyspnoea alone, but it is not diagnostic and must be interpreted with examination and objective evidence.',
     },
   ],
   'pulm-asthma-1': [
@@ -96,15 +96,15 @@ export const QUESTIONS_BY_TOPIC = {
   'neuro-stroke-1': [
     {
       id: 'q1',
-      stem: 'Why is a non-contrast CT head the mandatory first imaging study in suspected acute stroke?',
+      stem: 'In most emergency settings, why is non-contrast CT head commonly the initial imaging study in suspected acute stroke?',
       options: [
         'It confirms the exact size of an ischemic infarct',
-        'It reliably rules out hemorrhage before any time-sensitive reperfusion therapy is considered',
+        'It rapidly identifies intracranial haemorrhage before time-sensitive reperfusion treatment is considered',
         'It is the only study that can detect a stroke at all',
         'It takes longer than MRI, allowing more time to plan',
       ],
       correct: 1,
-      explanation: 'The critical first job of non-contrast CT is excluding hemorrhage, since reperfusion therapies intended for ischemic stroke would be harmful in a hemorrhagic stroke.',
+      explanation: 'Non-contrast CT is widely used first because it is fast and detects acute haemorrhage. Imaging pathways vary by setting and availability; vascular imaging is added when large-vessel occlusion is suspected, and treatment should not be delayed unnecessarily.',
     },
     {
       id: 'q2',
