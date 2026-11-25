@@ -1,4 +1,5 @@
 import { CURRICULUM } from './curriculum.js';
+import { LATER_QUESTIONS } from './days/index.js';
 // A curated MCQ bank, written to match curriculum.js's real days. Not
 // sourced from Firestore's `mcqs`/`mcqAnswers` collections: those are
 // server-write-only and currently empty (the Editorial publish pipeline
@@ -457,6 +458,8 @@ QUESTIONS_BY_TOPIC['em-shock-1'].push(
   { id: 'q3', stem: "Which finding is consistent with impaired tissue perfusion in shock?", options: ["Altered mentation with cool peripheries and prolonged capillary refill","Isolated fever with normal perfusion","Normal lactate in all circumstances","Mild tachycardia after exercise"], correct: 0, explanation: "Shock is inadequate tissue perfusion. Altered mentation, cool peripheries and prolonged capillary refill are clinical clues interpreted with the full haemodynamic picture.", difficulty: 'Foundational' },
   { id: 'q4', stem: "Which haemodynamic pattern is typical of early distributive septic shock?", options: ["Reduced systemic vascular resistance with often increased cardiac output","Markedly increased SVR in every case","Isolated elevated left atrial pressure","Absence of peripheral vasodilation"], correct: 0, explanation: "Early distributive shock commonly features vasodilation and reduced systemic vascular resistance; cardiac output may be normal or elevated.", difficulty: 'Intermediate' },
 );
+
+Object.assign(QUESTIONS_BY_TOPIC, LATER_QUESTIONS);
 
 export function getQuestionBank({ system = 'all', difficulty = 'all' } = {}) {
   return Object.entries(QUESTIONS_BY_TOPIC).flatMap(([topicId, items]) => {

@@ -1,15 +1,15 @@
-// The 100-day curriculum. Written content for the days listed in DAYS
-// below (each carries its own clinical-review status and sources, see
-// docs/CONTENT.md: nothing is called "reviewed" until a clinician has
-// checked it against the listed sources); every other day (1-100) is generated as a `comingSoon`
-// stub so the Challenge/Topics UI has a full 100-day structure to
-// render and navigate, without pretending 100 days of real content
-// exist yet. Content here is a study-aid outline at a foundational,
-// textbook level — classifications, mechanisms, clinical reasoning
-// frames — deliberately not specific dosing or treatment algorithms,
-// which is exactly where a non-clinician-reviewed resource is riskiest
-// to get subtly wrong.
-const DAYS = [
+// The 100-day curriculum. Days 1-18 are below; days 19-100 live in
+// js/data/days/<specialty>.js so each specialty can be sent to its own
+// reviewer. Every day carries its own review status and sources (see
+// docs/CONTENT.md): nothing is called "reviewed" until a named clinician
+// has checked it against the listed sources. Content is a study-aid
+// outline at a foundational, textbook level — classifications,
+// mechanisms, clinical reasoning frames — deliberately without specific
+// dosing or treatment algorithms.
+import { LATER_DAYS } from './days/index.js';
+import { EARLY_SOURCES } from './days/early-sources.js';
+
+const EARLY_DAYS = [
   {
     day: 1,
     title: 'Heart Failure — The Big Picture',
@@ -523,8 +523,12 @@ Each category points toward a different first move — volume for hypovolemic sh
   },
 ];
 
-// Fill the rest of the 1-100 range as explicit "coming soon" stubs so
-// Challenge/Topics can render a complete 100-day structure honestly.
+const DAYS = [
+  ...EARLY_DAYS.map((d) => ({ ...d, sources: d.sources && d.sources.length ? d.sources : (EARLY_SOURCES[d.topicId] || []) })),
+  ...LATER_DAYS,
+];
+
+// Any day not written yet falls back to an explicit "coming soon" stub.
 const byDay = new Map(DAYS.map((d) => [d.day, d]));
 
 /** True only when a clinician has signed the day off against its sources. */
