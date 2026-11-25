@@ -33,15 +33,15 @@ export const QUESTIONS_BY_TOPIC = {
   'pulm-asthma-1': [
     {
       id: 'q1',
-      stem: 'What distinguishes asthma\'s airway obstruction from that of COPD on spirometry?',
+      stem: 'Which spirometric finding supports variable expiratory airflow limitation in a patient with suspected asthma?',
       options: [
         'Asthma shows a restrictive pattern',
-        'Asthma\'s obstruction significantly improves with bronchodilator',
+        'An increase in FEV1 of at least 12% and 200 mL after bronchodilator',
         'COPD improves more than asthma with bronchodilator',
         'There is no spirometric difference',
       ],
       correct: 1,
-      explanation: 'Asthma is characterized by substantially reversible obstruction on bronchodilator testing; COPD\'s obstruction is comparatively fixed.',
+      explanation: 'A significant bronchodilator response supports variable airflow limitation and asthma, but is not exclusive to asthma: some patients with COPD also show reversibility. Interpret spirometry alongside symptoms and clinical context.',
     },
     {
       id: 'q2',
@@ -143,15 +143,15 @@ export const QUESTIONS_BY_TOPIC = {
   'pulm-copd-1': [
     {
       id: 'q1',
-      stem: 'On spirometry, how does COPD’s obstruction typically differ from asthma’s after bronchodilator is given?',
+      stem: 'Which spirometric criterion supports a diagnosis of COPD in a patient with compatible symptoms and exposure history?',
       options: [
-        'COPD’s obstruction improves dramatically, more than asthma’s',
-        'COPD’s obstruction improves only minimally, unlike asthma’s substantial reversibility',
+        'Post-bronchodilator FEV1/FVC remains below 0.70',
+        'FEV1/FVC is persistently below 0.70 after bronchodilator',
         'Neither condition shows any obstruction on spirometry',
         'COPD causes a restrictive, not obstructive, pattern',
       ],
       correct: 1,
-      explanation: 'COPD’s airflow limitation is largely fixed/structural, so bronchodilator produces only minimal improvement, unlike asthma’s substantially reversible obstruction.',
+      explanation: 'COPD is supported by persistent post-bronchodilator airflow obstruction (FEV1/FVC below 0.70) in the appropriate clinical context. Bronchodilator reversibility alone does not reliably distinguish COPD from asthma.',
     },
     {
       id: 'q2',
@@ -410,7 +410,7 @@ QUESTIONS_BY_TOPIC['id-sepsis-1'].push(
   { id: 'q4', stem: "Why must lactate be interpreted in clinical context in suspected sepsis?", options: ["It rises from several causes and is not infection-specific","It directly measures bacterial load","Normal lactate excludes sepsis","It measures oxygen saturation"], correct: 0, explanation: "Lactate can rise with impaired perfusion, adrenergic stimulation, seizures, impaired clearance and other causes.", difficulty: 'Advanced' },
 );
 QUESTIONS_BY_TOPIC['pulm-copd-1'].push(
-  { id: 'q3', stem: "Which spirometric criterion is commonly used to confirm persistent airflow obstruction in COPD?", options: ["Post-bronchodilator FEV1/FVC below 0.70","Pre-bronchodilator FEV1 above 80% predicted","TLC below 80% predicted","DLCO above 120% predicted"], correct: 0, explanation: "GOLD uses post-bronchodilator FEV1/FVC below 0.70 in the appropriate clinical context.", difficulty: 'Intermediate' },
+  { id: 'q3', stem: "In a patient with established COPD, which additional spirometric measure is used to grade airflow limitation?", options: ["Post-bronchodilator FEV1 expressed as a percentage of predicted","Pre-bronchodilator FEV1 above 80% predicted","TLC below 80% predicted","DLCO above 120% predicted"], correct: 0, explanation: "After confirming persistent airflow obstruction, GOLD grades spirometric severity using post-bronchodilator FEV1 percent predicted.", difficulty: 'Intermediate' },
   { id: 'q4', stem: "Which intervention most clearly slows smoking-related accelerated lung-function decline in COPD?", options: ["Smoking cessation","Routine antibiotics without infection","Long-term oral steroids for all","Avoiding physical activity"], correct: 0, explanation: "Smoking cessation is the key intervention to reduce ongoing tobacco-related lung injury.", difficulty: 'Foundational' },
 );
 QUESTIONS_BY_TOPIC['gi-ibd-1'].push(
