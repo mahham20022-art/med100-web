@@ -4,6 +4,7 @@
 // paths (those are hard-denied to clients; see core/sync.js header).
 import { state, subscribe } from '../state.js';
 import { computeStreaks } from '../core/streaks.js';
+import { dailyStreak } from '../core/activity.js';
 
 const TOTAL_DAYS = 100;
 
@@ -16,7 +17,8 @@ export function renderProgress(root) {
 }
 
 function template() {
-  const { current, longest, total } = computeStreaks(state.completedDays);
+  const { total } = computeStreaks(state.completedDays);
+  const { current, best: longest } = dailyStreak();
   const mastered = state.flashcardSchedule.filter((s) => s.stage === 'mastered').length;
   const dueNow = state.flashcardSchedule.filter((s) => s.dueDate <= Date.now()).length;
 
@@ -37,8 +39,8 @@ function template() {
     <div class="card" style="margin-top:var(--sp-4);">
       <div class="card-title">Your study rhythm</div>
       <p style="color:var(--color-text-secondary);font-size:var(--fs-sm);">
-        You have completed ${total} study days. Your current consecutive run is ${current} days,
-        and your longest recorded run is ${longest} days.
+        You have completed ${total} study days. Your current daily streak is ${current} day${current === 1 ? '' : 's'},
+        and your longest is ${longest}.
       </p>
     </div>
   `;

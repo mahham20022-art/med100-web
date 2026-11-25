@@ -6,7 +6,10 @@ import {
   subscribeFlashcardSchedule,
   subscribeQuizAttempts,
   subscribeTeachingSessions,
+  addActiveDate,
 } from './core/sync.js';
+import { setActivitySync } from './core/activity.js';
+setActivitySync(addActiveDate);
 import { state, setState } from './state.js';
 import { route, notFound, startRouter, navigate, currentRoutePath } from './router.js';
 

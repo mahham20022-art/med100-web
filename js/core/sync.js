@@ -12,6 +12,7 @@
 // Fine for "same account, mostly one device at a time"; a real
 // multi-device story would need a Cloud Function.
 import { getDb, getSdk } from './firebase.js';
+import { recordActivity } from './activity.js';
 
 function store() {
   return getSdk().store;
@@ -42,6 +43,7 @@ export function subscribeChallengeProgress(uid, onChange, onError) {
         skippedDays: Array.isArray(data.skippedDays) ? data.skippedDays : [],
         hasStartedAt: !!data.startedAt,
         lastActionDate: toMillis(data.lastActionDate),
+        activeDates: Array.isArray(data.activeDates) ? data.activeDates : [],
       });
     },
     onError,
@@ -49,6 +51,7 @@ export function subscribeChallengeProgress(uid, onChange, onError) {
 }
 
 export async function markDayComplete(uid, nextDay, hasStartedAt) {
+  recordActivity();
   const s = store();
   const ref = s.doc(getDb(), 'users', uid, 'challengeProgress', 'state');
   const payload = {
@@ -58,6 +61,12 @@ export async function markDayComplete(uid, nextDay, hasStartedAt) {
   };
   if (!hasStartedAt) payload.startedAt = s.serverTimestamp();
   await s.setDoc(ref, payload, { merge: true });
+}
+
+// Best-effort list of local calendar days with study activity (streak).
+export async function addActiveDate(uid, key) {
+  const s = store();
+  await s.setDoc(s.doc(getDb(), 'users', uid, 'challengeProgress', 'state'), { activeDates: s.arrayUnion(key) }, { merge: true });
 }
 
 // --- Notes (users/{uid}/notes/{id}) — own simple shape -----------------
@@ -77,6 +86,7 @@ export function subscribeNotes(uid, onChange, onError) {
 }
 
 export async function addNote(uid, text) {
+  recordActivity();
   const s = store();
   await s.addDoc(s.collection(getDb(), 'users', uid, 'notes'), { text, createdAt: Date.now() });
 }
@@ -103,6 +113,7 @@ export function subscribeFlashcardSchedule(uid, onChange, onError) {
 }
 
 export async function upsertFlashcardSchedule(uid, flashcardId, data) {
+  recordActivity();
   const s = store();
   const ref = s.doc(getDb(), 'users', uid, 'flashcardSchedule', flashcardId);
   await s.setDoc(ref, data, { merge: true });
@@ -117,6 +128,7 @@ export async function upsertFlashcardSchedule(uid, flashcardId, data) {
 // those (hard-denied) paths.
 
 export async function submitQuizAttempt(uid, attempt) {
+  recordActivity();
   const s = store();
   await s.addDoc(s.collection(getDb(), 'users', uid, 'quizAttempts'), {
     ...attempt,
@@ -145,6 +157,7 @@ export function subscribeQuizAttempts(uid, onChange, onError) {
 // session logged here is genuinely readable from the native side too.
 
 export async function submitTeachingSession(uid, session) {
+  recordActivity();
   const s = store();
   await s.addDoc(s.collection(getDb(), 'users', uid, 'teachingSessions'), {
     ...session,

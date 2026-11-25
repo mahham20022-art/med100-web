@@ -2,6 +2,7 @@ import { state, subscribe } from '../state.js';
 import { CURRICULUM, getDay, isReviewed } from '../data/curriculum.js';
 import { markDayComplete } from '../core/sync.js';
 import { computeStreaks } from '../core/streaks.js';
+import { dailyStreak } from '../core/activity.js';
 import { esc, qsa } from '../core/dom.js';
 import { navigate } from '../router.js';
 import { beatLine } from '../core/rhythm.js';
@@ -84,7 +85,7 @@ export function renderTopics(root) {
 function listTemplate(systems) {
   const completed = state.completedDays.length;
   const publishedCount = CURRICULUM.filter((day) => !day.comingSoon).length;
-  const { current } = computeStreaks(state.completedDays);
+  const { current } = dailyStreak();
   const options = systems.map((system) =>
     `<option value="${esc(system)}">${system === 'all' ? 'All disciplines' : esc(system)}</option>`,
   ).join('');

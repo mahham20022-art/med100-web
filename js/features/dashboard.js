@@ -3,6 +3,7 @@
 // something (no rows of zeros for a new learner).
 import { state, subscribe } from '../state.js';
 import { computeStreaks } from '../core/streaks.js';
+import { dailyStreak, activeDates } from '../core/activity.js';
 import { getDay, getDayByTopicId } from '../data/curriculum.js';
 import { getQuestionsForTopic } from '../data/questions.js';
 import { relativeTime } from '../core/time.js';
@@ -48,12 +49,51 @@ export function readingMinutes(day) {
 }
 
 const pad = (n) => String(n).padStart(2, '0');
+const FLAME = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M12 2.5c.6 3.2 4.8 5.6 4.8 10.4A4.8 4.8 0 0 1 12 17.7 4.8 4.8 0 0 1 7.2 12.9c0-2.1 1-3.6 2.2-4.8.2 1.6 1 2.6 2 3.1C11 8.6 11.3 5.3 12 2.5z" fill="currentColor"/><path d="M12 21.5c-2.3 0-4-1.5-4-3.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity=".55"/></svg>';
+
+// Streak block under the hero: what keeps it, and the shield.
+function streakSection(nextDay) {
+  const st = dailyStreak();
+  const h = new Date().getHours();
+  if (!st.current && !st.total) return '';
+  const due = dueFlashcards().length;
+  const quick = due ? { go: '/reviews', t: `Recall ${Math.min(due, 5)} question${Math.min(due, 5) === 1 ? '' : 's'}`, s: 'about 2 min' } : { go: `/topic/${nextDay}`, t: `Start day ${nextDay}`, s: 'today’s topic' };
+  let head, sub, act = '';
+  if (st.doneToday) {
+    head = `${st.current}-day streak`;
+    sub = st.current >= st.best && st.current > 1 ? 'Your longest yet. Today counts.' : `Today counts. Best: ${st.best} days.`;
+  } else if (st.current) {
+    head = `Keep your ${st.current}-day streak`;
+    sub = `${h >= 18 ? 'The day is nearly over. ' : ''}Any study counts: one question, one card, one note.`;
+    act = `<button class="btn btn-signal btn-sm" data-go="${quick.go}">${quick.t}</button>`;
+  } else {
+    head = 'Start a streak today';
+    sub = 'Any study counts: one question, one card, one note.';
+    act = `<button class="btn btn-primary btn-sm" data-go="${quick.go}">${quick.t}</button>`;
+  }
+  const week = [...Array(7)].map((_, i) => {
+    const d = new Date(); d.setDate(d.getDate() - (6 - i));
+    const k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const on = activeSet.has(k), shield = st.shieldUsed === k;
+    return `<span class="sk-d${on ? ' on' : ''}${shield ? ' shield' : ''}${i === 6 ? ' today' : ''}"><i></i><small>${d.toLocaleDateString(undefined, { weekday: 'narrow' })}</small></span>`;
+  }).join('');
+  return `<section class="panel streak-wrap${st.atRisk ? ' at-risk' : ''}"><div class="sk">
+    <div class="sk-flame">${FLAME}<b>${st.current}</b></div>
+    <div class="sk-copy"><strong>${head}</strong><span>${sub}</span></div>${act}</div>
+    <div class="sk-week">${week}</div>
+    <p class="sk-note">${st.shieldReady ? 'Shield ready: one missed day a week won’t break your streak.' : 'Shield used this week: miss another day and the streak restarts.'}</p></section>`;
+}
+let activeSet = new Set();
 
 function hero(nextDay, today, isDone) {
   const date = new Date().toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
   const name = firstName();
   const hello = `${greeting()}${name ? `, ${esc(name)}` : ''}.`;
-  const top = `<div class="hero-top"><span class="hero-day">${isDone ? 'Day 100 · complete' : `Day ${pad(nextDay)} / 100`}</span><span class="hero-date">${esc(date)}</span></div>`;
+  const st = dailyStreak();
+  const streak = st.current
+    ? `<span class="hero-streak${st.doneToday ? ' is-lit' : ''}" title="${st.doneToday ? 'Today counts' : 'Study today to keep it'}">${FLAME}<b>${st.current}</b> day${st.current === 1 ? '' : 's'}</span>`
+    : '';
+  const top = `<div class="hero-top"><span class="hero-day">${isDone ? 'Day 100 · complete' : `Day ${pad(nextDay)} / 100`}</span>${streak || `<span class="hero-date">${esc(date)}</span>`}</div>`;
   const beat = `<svg class="hero-beat" viewBox="0 0 320 46" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="${beatLine(320, 4)}"/><circle cx="320" cy="31" r="4"/></svg>`;
 
   if (isDone) {
@@ -88,7 +128,7 @@ function rhythmPanel(total, current, nextDay, isDone) {
   const vitals = [
     `<div class="vital"><b>${total}<small>/100</small></b><span>days written</span></div>`,
     `<div class="vital"><b>${phase.n}<small>/5</small></b><span>${phase.name} phase</span></div>`,
-    activeVital(),
+    (() => { const st = dailyStreak(); return `<div class="vital${st.current >= 7 ? ' is-signal' : ''}"><b>${st.current}</b><span>day streak · best ${st.best}</span></div>`; })(),
     acc !== null ? `<div class="vital"><b>${acc}<small>%</small></b><span>of ${answered} answers right</span></div>` : '',
   ].join('');
   return `<section class="panel rhythm-wrap">
@@ -110,23 +150,6 @@ function dueSection() {
     <div class="due-n">${due || weak}</div>
     <div class="due-copy"><strong>${due ? `${due === 1 ? 'Question' : 'Questions'} to recall` : 'Weak spots'}</strong><span>${line}</span></div>
     <button class="btn btn-primary btn-sm" data-go="/reviews">${due ? 'Recall' : 'Practise'}</button></div></section>`;
-}
-
-// Consistency over the last 14 days instead of a streak that breaks after
-// one night on call: any study activity (a question answered, a card
-// reviewed, a teach-back, a note) counts the day.
-function activeDays(windowDays = 14) {
-  const since = Date.now() - windowDays * 86400000, days = new Set();
-  const add = (v) => { const t = ms(v); if (t >= since) days.add(new Date(t).toDateString()); };
-  state.quizAttempts.forEach((a) => add(a.answeredAt));
-  state.teachingSessions.forEach((s) => add(s.completedAt));
-  state.flashcardSchedule.forEach((f) => add(f.lastReviewedAt));
-  state.notes.forEach((n) => add(n.createdAt));
-  return days.size;
-}
-function activeVital() {
-  const n = activeDays();
-  return `<div class="vital${n >= 10 ? ' is-signal' : ''}"><b>${n}<small>/14</small></b><span>active days, last two weeks</span></div>`;
 }
 
 function toolsSection(nextDay) {
@@ -173,10 +196,12 @@ function activitySection() {
 }
 
 function template() {
+  activeSet = activeDates();
   const { current, total } = computeStreaks(state.completedDays);
   const nextDay = Math.min(total + 1, TOTAL_DAYS), today = getDay(nextDay), isDone = total >= TOTAL_DAYS;
   return `<div class="dash">
     ${hero(nextDay, today, isDone)}
+    ${streakSection(nextDay)}
     ${hasGuestProgress() && !dashboardLinkDismissed() ? `<div class="keep-wrap">${guestLinkCard({ dismissible: true })}</div>` : ''}
     ${rhythmPanel(total, current, nextDay, isDone)}
     ${dueSection()}
