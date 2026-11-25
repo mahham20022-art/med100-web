@@ -4,6 +4,7 @@
 import { state, subscribe } from '../state.js';
 import { computeStreaks } from '../core/streaks.js';
 import { dailyStreak, activeDates } from '../core/activity.js';
+import { icuTopicLabel } from '../data/icu/questions.js';
 import { getDay, getDayByTopicId } from '../data/curriculum.js';
 import { getQuestionsForTopic } from '../data/questions.js';
 import { relativeTime } from '../core/time.js';
@@ -155,6 +156,7 @@ function dueSection() {
 function toolsSection(nextDay) {
   const d = Math.min(nextDay, TOTAL_DAYS);
   const items = [
+    { route: '/icu', ic: 'icu', t: 'ICU practice', s: '107 critical care questions' },
     { route: '/mock-exam', ic: 'mcq', t: 'Mock exam', s: 'Timed, mixed topics' },
     { route: `/teaching/${d}`, ic: 'teaching', t: 'Teach it back', s: 'Explain today’s topic' },
     { route: '/challenge', ic: 'challenge', t: 'The plan', s: 'Five phases, 100 days' },
@@ -169,7 +171,7 @@ function performanceSection() {
   const byTopic = new Map();
   for (const a of state.quizAttempts) { const e = byTopic.get(a.topicId) || { total: 0, correct: 0 }; e.total++; if (a.isCorrect) e.correct++; byTopic.set(a.topicId, e); }
   const ranked = [...byTopic.entries()].filter(([, v]) => v.total >= 2)
-    .map(([topicId, v]) => ({ title: getDayByTopicId(topicId)?.title || topicId, acc: v.correct / v.total })).sort((a, b) => b.acc - a.acc);
+    .map(([topicId, v]) => ({ title: getDayByTopicId(topicId)?.title || icuTopicLabel(topicId) || topicId, acc: v.correct / v.total })).sort((a, b) => b.acc - a.acc);
   const strongest = ranked[0], weakest = ranked.length > 1 && ranked[ranked.length - 1].acc < 0.8 ? ranked[ranked.length - 1] : null;
   return `<section class="panel perf-wrap"><div class="panel-head"><h3>Accuracy</h3><a href="#/progress">Details</a></div>
     <div class="perf-line"><span>${correct} of ${total} correct</span><strong>${pct}%</strong></div>
@@ -187,7 +189,7 @@ function ms(v) {
 
 function activitySection() {
   const items = [
-    ...state.quizAttempts.map((a) => ({ t: ms(a.answeredAt), topicId: a.topicId, k: a.isCorrect ? '' : 'is-bad', label: `${a.isCorrect ? 'Right' : 'Missed'} · ${getDayByTopicId(a.topicId)?.title || 'Question'}` })),
+    ...state.quizAttempts.map((a) => ({ t: ms(a.answeredAt), topicId: a.topicId, k: a.isCorrect ? '' : 'is-bad', label: `${a.isCorrect ? 'Right' : 'Missed'} · ${getDayByTopicId(a.topicId)?.title || icuTopicLabel(a.topicId) || 'Question'}` })),
     ...state.teachingSessions.map((s) => ({ t: ms(s.completedAt), topicId: s.topicId, k: 'is-teach', label: `Taught back · ${s.topicTitle}` })),
   ].filter((a) => a.t > 0).sort((a, b) => b.t - a.t).slice(0, 5);
   if (!items.length) return '';

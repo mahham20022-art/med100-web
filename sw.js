@@ -3,7 +3,7 @@
 // but the old broken version kept showing" earlier in this same
 // project's history. Network-first means: online, you always get the
 // current deploy; offline, you fall back to whatever was last cached.
-const CACHE_NAME = 'med100-rhythm-v11';
+const CACHE_NAME = 'med100-rhythm-v12';
 const SHELL_FILES = [
   './',
   './index.html',
@@ -37,6 +37,8 @@ const SHELL_FILES = [
   './js/data/days/index.js',
   './js/data/days/early-sources.js',
   './js/data/days/related.js',
+  './js/data/icu/questions.js',
+  './js/features/icu.js',
   './js/data/days/cardiology.js',
   './js/data/days/pulmonology.js',
   './js/data/days/nephrology.js',

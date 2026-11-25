@@ -23,6 +23,7 @@ import { renderReviews } from './features/reviews.js';
 import { renderNotes } from './features/notes.js';
 import { renderProgress } from './features/analytics.js';
 import { renderAbout } from './features/about.js';
+import { renderIcu } from './features/icu.js';
 import { renderProfile } from './features/profile.js';
 import { ON_OLD_HOST, moveFromOldHost, takeIncomingMove, finishIncomingMove } from './core/move.js';
 import { toast } from './features/guest-link.js';
@@ -190,6 +191,16 @@ function registerRoutes() {
     title.textContent = 'Profile';
     updateNavHighlight();
     return renderProfile(view, { onSignOut: () => signOutUser() });
+  });
+  route('/icu', () => {
+    title.textContent = 'ICU practice';
+    updateNavHighlight();
+    return renderIcu(view);
+  });
+  route('/icu/:topic', ({ topic }) => {
+    title.textContent = 'ICU practice';
+    updateNavHighlight();
+    return renderIcu(view, { topic });
   });
   route('/about', () => {
     title.textContent = 'About';

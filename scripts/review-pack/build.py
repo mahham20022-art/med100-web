@@ -72,7 +72,7 @@ h1,h2,h3{{font-family:InterD,Inter,sans-serif;letter-spacing:-.01em;margin:0}}
 .box ol{{margin:0;padding-left:5mm}} .box li{{margin:1.2mm 0}}
 .meta{{margin-top:6mm;display:grid;grid-template-columns:1.3fr 1.2fr .7fr;gap:4mm;font-size:8pt}}
 .meta div{{border-top:1.5px solid #161A22;padding-top:2mm}}
-.toc{{margin-top:5mm;columns:2;column-gap:8mm;font-size:9pt}}
+.toc{{margin-top:5mm;columns:3;column-gap:6mm;font-size:8pt}}
 .toc div{{break-inside:avoid;padding:1mm 0;border-bottom:1px dotted #D8D0C0}}
 /* day */
 .day{{page-break-before:always}}

@@ -40,3 +40,7 @@ Days 19-100 live in `js/data/days/<specialty>.js`; day order is a round-robin ac
     python3 scripts/review-pack/build.py /tmp/med100.json out/
 
 Review is done by the editor (Dr Mohamed Najm); no outside reviewers are named. After checking a day against its sources, apply corrections in the specialty file and set `review: { status: 'reviewed', by: 'Dr Mohamed Najm', date }` on it (validation enforces the fields).
+
+## ICU practice (separate from the 100 days)
+
+`js/data/icu/questions.js` holds 107 ICU-level questions moved from Najm ICUCalc. Unlike the curriculum they contain doses, so the screen (`#/icu`, `js/features/icu.js`) carries its own warning. `ICU_EDITS` lists every change made in the Nov 2026 pre-check. When the editor signs off the review pack (`scripts/review-pack/build_icu.py`), set `ICU_REVIEW = { status: 'reviewed', by: 'Dr Mohamed Najm', date: '…' }`. Answers are saved as quizAttempts with topicId `icu:<topic>`, so they count toward accuracy and the streak.

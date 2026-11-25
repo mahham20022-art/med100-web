@@ -6,6 +6,7 @@ const ICONS = {
   topics: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15.5a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 22"/><path d="M4 5.5A2.5 2.5 0 0 0 6.5 8H19"/>',
   mcq: '<rect x="6" y="3.5" width="12" height="17" rx="2"/><path d="M9 3.5V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v.5"/><path d="m9 12.5 2 2 4-4"/>',
   teaching: '<circle cx="12" cy="7" r="3"/><path d="M5 21c0-3.9 3.1-7 7-7s7 3.1 7 7"/><path d="M3 14.5 12 11l9 3.5"/>',
+  icu: '<path d="M3 12h4l2-5 3 10 2-5h7"/><rect x="2.5" y="4" width="19" height="16" rx="3"/>',
   review: '<path d="M3 12a9 9 0 1 1 3 6.7"/><path d="M3 17v-4h4"/>',
   notes: '<path d="M5 4h10l4 4v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M15 4v4h4"/><path d="M8 13h8M8 17h5"/>',
   analytics: '<path d="M4 20V10M11 20V4M18 20v-7"/>',
