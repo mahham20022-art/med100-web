@@ -357,3 +357,96 @@ button,input,textarea,select{font:inherit}
  #view-root .exam-review-item{padding:17px 14px}
  #view-root .exam-review-actions{display:grid;grid-template-columns:1fr}
 }
+
+
+/* Med100 Question Bank + timed Mock Examination */
+#view-root .library-exam-cta{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 21px;margin:0 0 22px;background:#EAE7DE;border:1px solid #D8D2C6}
+#view-root .library-exam-cta>div{display:flex;flex-direction:column;gap:4px}
+#view-root .library-exam-cta strong{font-family:var(--font-serif);font-size:19px;font-weight:600;color:var(--color-brand)}
+#view-root .library-exam-cta span{font-size:11px;color:var(--color-text-secondary)}
+#view-root .mock-intro{background:var(--color-brand);color:#F8F6F0;padding:26px 28px;margin-bottom:20px;border-top:3px solid var(--color-gold)}
+#view-root .mock-kicker{font-size:9px;letter-spacing:.18em;color:#D4B77F;font-weight:800}
+#view-root .mock-intro>strong{display:block;font-family:var(--font-serif);font-size:52px;font-weight:500;line-height:1.15;margin-top:5px}
+#view-root .mock-intro p{font-size:13px;color:#D5DAD7;margin:3px 0 15px}
+#view-root .mock-intro small{display:block;border-top:1px solid rgba(255,255,255,.17);padding-top:12px;font-size:10px;line-height:1.6;color:#C1CAC6;max-width:700px}
+#view-root .mock-setup{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px;background:#FBFAF7;border:1px solid var(--color-border);padding:24px}
+#view-root .mock-setup label{display:flex;flex-direction:column;gap:7px}
+#view-root .mock-setup label span{font-size:9px;letter-spacing:.14em;font-weight:800;color:#8B7655}
+#view-root .mock-setup select{min-height:46px;padding:10px 12px;background:#F7F5EF;border:1px solid #D5D0C5;border-radius:4px;color:var(--color-brand)}
+#view-root .mock-availability{grid-column:1/-1;padding-top:10px;border-top:1px solid var(--color-border);font-size:11px;color:var(--color-text-secondary)}
+#view-root .mock-setup>.btn{grid-column:1/-1}
+#view-root .mock-footnote{font-size:10px;line-height:1.7;color:var(--color-text-secondary);max-width:760px;margin:15px 0}
+#view-root .mock-exam-top{display:flex;justify-content:space-between;align-items:center;gap:18px;background:var(--color-brand);padding:23px 25px;color:#FFF;border-top:3px solid var(--color-gold)}
+#view-root .mock-exam-top h2{font-family:var(--font-serif);font-size:29px;font-weight:500;color:#FFF;margin:5px 0}
+#view-root .mock-exam-top small{font-size:10px;color:#CAD1CD}
+#view-root .mock-clock{font-family:var(--font-serif);font-size:34px;font-variant-numeric:tabular-nums;color:#FFF;border:1px solid rgba(255,255,255,.25);padding:8px 14px;min-width:105px;text-align:center}
+#view-root .mock-clock.is-urgent{color:#F2B5A5;border-color:#C17B69}
+#view-root .mock-progress{height:4px;background:#D8D3C8;margin:0 0 12px}
+#view-root .mock-progress span{display:block;height:100%;background:var(--color-gold)}
+#view-root .mock-session-line{display:flex;justify-content:space-between;font-size:10px;color:var(--color-text-secondary);margin:13px 0}
+#view-root .mock-number-grid{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 20px}
+#view-root .mock-number-grid button{width:34px;height:32px;border:1px solid #D2CCBF;background:#FBFAF7;color:#6D7474;font-size:10px;border-radius:3px}
+#view-root .mock-number-grid button.active{border:2px solid var(--color-brand);color:var(--color-brand);font-weight:800}
+#view-root .mock-number-grid button.answered{background:#E6EDE6;border-color:#A6B4A5;color:#45664D}
+#view-root .mock-question{background:#FBFAF7;border:1px solid var(--color-border);padding:clamp(20px,3vw,34px)}
+#view-root .mock-question-meta{display:flex;justify-content:space-between;gap:12px;padding-bottom:13px;border-bottom:1px solid var(--color-border);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#92764C}
+#view-root .mock-question h3{font-family:var(--font-serif);font-size:clamp(21px,2.5vw,29px);line-height:1.45;font-weight:500;color:var(--color-brand);margin:22px 0}
+#view-root .mock-options{display:flex;flex-direction:column;gap:9px}
+#view-root .mock-options button{display:grid;grid-template-columns:31px minmax(0,1fr);align-items:center;gap:12px;text-align:left;padding:13px 14px;min-height:54px;background:#F7F5EF;border:1px solid #D9D4C9;border-radius:4px;color:var(--color-text)}
+#view-root .mock-options button:not(:disabled):hover{border-color:#A88A5C;background:#F0EBE1}
+#view-root .mock-options button:disabled{opacity:1;cursor:default}
+#view-root .mock-options button.chosen{border:2px solid var(--color-brand);background:#EAE7DE}
+#view-root .mock-options button b{width:27px;height:27px;border:1px solid #CFC7B8;border-radius:50%;display:grid;place-items:center;font-family:var(--font-serif);font-size:12px;color:#8B7655}
+#view-root .mock-options button span{font-size:13px;line-height:1.55}
+#view-root .mock-controls{display:flex;justify-content:space-between;gap:12px;margin:18px 0}
+#view-root .mock-controls .btn{min-width:145px}
+#view-root .mock-submit-row{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--color-border);padding-top:15px;margin-bottom:30px}
+#view-root .mock-submit-row span{font-size:10px;color:var(--color-text-secondary)}
+#view-root .mock-submit-row button,#view-root .mock-confirm button{font-size:11px;color:#986E37;text-decoration:underline;text-underline-offset:3px}
+#view-root .mock-confirm{padding:32px;background:#FBFAF7;border:1px solid var(--color-border);display:flex;flex-wrap:wrap;gap:13px;align-items:center}
+#view-root .mock-confirm h2{font-family:var(--font-serif);font-size:28px;font-weight:500;color:var(--color-brand);width:100%}
+#view-root .mock-confirm p{font-size:12px;color:var(--color-text-secondary);width:100%}
+#view-root .mock-results{background:var(--color-brand);color:#F8F6F0;padding:28px;margin:0 0 20px;border-top:3px solid var(--color-gold)}
+#view-root .mock-results h2{font-family:var(--font-serif);font-size:34px;font-weight:500;color:#FFF;margin:8px 0 18px}
+#view-root .mock-score{display:flex;align-items:baseline;gap:16px;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.2)}
+#view-root .mock-score strong{font-family:var(--font-serif);font-size:54px;font-weight:500;color:#FFF}
+#view-root .mock-score strong small{font-size:23px;color:#C8CECA}
+#view-root .mock-score span{font-size:11px;color:#C9D0CE}
+#view-root .mock-result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+#view-root .mock-result-stats div{display:flex;flex-direction:column;gap:4px}
+#view-root .mock-result-stats b{font-family:var(--font-serif);font-size:25px;font-weight:500;color:#FFF}
+#view-root .mock-result-stats span{font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:#C3C9C6}
+#view-root .mock-results>p{font-size:11px;line-height:1.65;color:#CDD3CF;margin-top:18px}
+#view-root .mock-review-heading{font-size:9px;letter-spacing:.16em;color:#92764C;font-weight:800;padding:13px 0;border-bottom:1px solid #BEB5A5}
+#view-root .mock-review-item{background:#FBFAF7;border:1px solid var(--color-border);padding:21px;margin:10px 0}
+#view-root .mock-review-meta{display:flex;justify-content:space-between;gap:10px;font-size:9px;letter-spacing:.08em;color:#8B7655}
+#view-root .mock-review-meta b.right{color:#52765A}
+#view-root .mock-review-meta b.wrong{color:#A45B4D}
+#view-root .mock-review-meta b.unanswered{color:#88847B}
+#view-root .mock-review-item h3{font-family:var(--font-serif);font-size:19px;line-height:1.45;font-weight:500;color:var(--color-brand);margin:13px 0}
+#view-root .mock-answer-line{display:flex;flex-direction:column;gap:4px;padding:10px 12px;background:#F0EEE8;margin:5px 0}
+#view-root .mock-answer-line span{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#817D73}
+#view-root .mock-answer-line b{font-size:12px;line-height:1.5;color:#4C5352}
+#view-root .mock-answer-line.correct-line{background:#EAF0E9}
+#view-root .mock-answer-line.correct-line b{color:#45634B}
+#view-root .mock-explanation{font-size:12px;line-height:1.75;color:#58646A;margin:13px 0 5px}
+#view-root .mock-save-state{font-size:9px;color:#8B887F}
+#view-root .mock-result-actions{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 35px}
+@media(max-width:759px){
+ #view-root .library-exam-cta{align-items:flex-start;flex-direction:column;padding:16px}
+ #view-root .mock-setup{grid-template-columns:1fr;padding:18px}
+ #view-root .mock-setup>.btn,#view-root .mock-availability{grid-column:1}
+ #view-root .mock-exam-top{padding:18px 15px}
+ #view-root .mock-exam-top h2{font-size:23px}
+ #view-root .mock-clock{font-size:27px;min-width:88px;padding:7px 8px}
+ #view-root .mock-question{padding:19px 14px}
+ #view-root .mock-question h3{font-size:21px;margin:18px 0}
+ #view-root .mock-options button{padding:11px 10px;gap:9px}
+ #view-root .mock-options button span{font-size:12px}
+ #view-root .mock-controls .btn{min-width:0;flex:1}
+ #view-root .mock-submit-row{align-items:flex-start;flex-direction:column}
+ #view-root .mock-results{padding:22px 17px}
+ #view-root .mock-score strong{font-size:45px}
+ #view-root .mock-review-item{padding:16px 13px}
+ #view-root .mock-result-actions{display:grid;grid-template-columns:1fr}
+}
