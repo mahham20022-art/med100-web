@@ -83,22 +83,39 @@ ul,ol{margin:0;padding:0;list-style:none}
   -webkit-mask-image:radial-gradient(ellipse at 50% 50%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse at 50% 50%,#000 0%,transparent 70%);
   animation:spFade .9s ease both}
 .sp-stage{position:relative;width:min(86vw,460px);text-align:center}
-.sp-trace{width:100%;height:auto;display:block;overflow:visible}
-.sp-trace path{fill:none;stroke:var(--paper);stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round;
-  stroke-dasharray:1;stroke-dashoffset:1;animation:spDraw 1.25s cubic-bezier(.45,0,.3,1) .15s forwards}
-.sp-trace circle{fill:var(--signal);filter:drop-shadow(0 0 6px rgba(217,69,47,.9));offset-rotate:0deg}
-.sp-word{margin-top:26px;font:600 clamp(40px,11vw,58px)/1 var(--f-display);letter-spacing:-.045em;
-  ;animation:spRise .7s var(--ease) .95s both}
-.sp-word b{color:var(--signal);font-weight:600}
-.sp-sub{margin-top:12px;font:500 11px/1 var(--f-mono);letter-spacing:.32em;text-transform:uppercase;color:rgba(250,246,239,.6);
-  animation:spRise .7s var(--ease) 1.15s both}
+/* Letters fly in from different directions and lock together: "Med" cool, "100" warm. */
+.sp-word{display:flex;justify-content:center;align-items:baseline;font:700 clamp(58px,17vw,92px)/1 var(--f-display);letter-spacing:-.05em}
+.sp-l{display:inline-block;opacity:0;will-change:transform,opacity,filter;
+  animation:spIn .95s cubic-bezier(.2,.9,.22,1.12) both}
+.sp-med{background:linear-gradient(160deg,#9BE7DA 0%,#4CC3B0 45%,#3B8FE0 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sp-num{background:linear-gradient(160deg,#FFC069 0%,#FF7A4D 45%,#D9452F 100%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-left:.01em}
+.sp-l.l4{margin-left:.06em}
+.l1{--x:-46vw;--y:-30vh;--r:-38deg;animation-delay:.05s}
+.l2{--x:-8vw;--y:44vh;--r:24deg;animation-delay:.16s}
+.l3{--x:18vw;--y:-46vh;--r:-16deg;animation-delay:.27s}
+.l4{--x:52vw;--y:-14vh;--r:42deg;animation-delay:.12s}
+.l5{--x:34vw;--y:40vh;--r:-28deg;animation-delay:.23s}
+.l6{--x:58vw;--y:22vh;--r:18deg;animation-delay:.34s}
+@keyframes spIn{
+  0%{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(1.9);filter:blur(10px)}
+  55%{opacity:1;filter:blur(0)}
+  100%{opacity:1;transform:none;filter:none}}
+.sp-word.locked .sp-l{animation:none;opacity:1}
+.sp-rule{display:flex;gap:6px;justify-content:center;margin:18px auto 0;width:min(62%,280px)}
+.sp-rule i{height:3px;border-radius:3px;transform:scaleX(0);animation:spRule .6s cubic-bezier(.3,0,.2,1) 1.2s forwards}
+.sp-rule .r-med{flex:3;background:linear-gradient(90deg,#4CC3B0,#3B8FE0);transform-origin:right}
+.sp-rule .r-num{flex:2.4;background:linear-gradient(90deg,#FF7A4D,#D9452F);transform-origin:left}
+@keyframes spRule{to{transform:scaleX(1)}}
+.sp-sub{margin-top:16px;font:500 11px/1 var(--f-mono);letter-spacing:.32em;text-transform:uppercase;color:rgba(250,246,239,.6);
+  animation:spRise .7s var(--ease) 1.4s both}
 .sp-err{margin-top:18px;font-size:13px;color:rgba(250,246,239,.8)}
-@keyframes spDraw{to{stroke-dashoffset:0}}
 @keyframes spRise{from{opacity:0;transform:translateY(8px)}}
 @keyframes spFade{from{opacity:0}}
-#loading-screen.is-quick .sp-trace path{animation-duration:.7s;animation-delay:0s}
-#loading-screen.is-quick .sp-word{animation-delay:.35s}
-#loading-screen.is-quick .sp-sub{animation-delay:.5s}
+#loading-screen.is-quick .sp-l{animation-duration:.6s}
+#loading-screen.is-quick .l1,#loading-screen.is-quick .l2,#loading-screen.is-quick .l3,#loading-screen.is-quick .l4,#loading-screen.is-quick .l5,#loading-screen.is-quick .l6{animation-delay:0s}
+#loading-screen.is-quick .sp-rule i{animation-delay:.5s}
+#loading-screen.is-quick .sp-sub{animation-delay:.6s}
+@media (prefers-reduced-motion:reduce){.sp-l{animation:spRise .3s both}.sp-rule i{animation-delay:.2s}.sp-sub{animation-delay:.3s}}
 
 /* ---------- sign-in ---------- */
 #auth-screen{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:24px;overflow:auto}
