@@ -23,7 +23,7 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="preload" href="fonts/InterDisplay-SemiBold.woff" as="font" type="font/woff" crossorigin>
 <link rel="preload" href="fonts/Inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/med100.css?v=5">
+<link rel="stylesheet" href="css/med100.css?v=6">
 </head>
 <body>
 
@@ -38,7 +38,7 @@
 <div id="auth-screen" class="hidden paper-grid">
   <div class="auth-card">
     <svg class="auth-mark" viewBox="0 0 80 80" aria-hidden="true"><rect x="3" y="3" width="74" height="74" rx="19" fill="#161A22"/><path d="M17 54V27.5C17 24.5 20.6 23 22.8 25.1L39.8 42.1L57.2 24.8C59.5 22.5 63 24.2 63 27.4V54M17 54H63" stroke="#FAF6EF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M40 42V59" stroke="#D9452F" stroke-width="5.5" stroke-linecap="round"/></svg>
-    <h1>Med<b>100</b></h1>
+    <h1><span class="wm-med">Med</span><b class="wm-num">100</b></h1>
     <p class="auth-tag">Master medicine, one day at a time.</p>
     <svg class="auth-beat" viewBox="0 0 300 40" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M0,31 L8.4,31 C10.8,26 15.6,26 18.0,31 L22.2,31 L23.5,34 L26.4,9.0 L29.5,39 L31.7,31 L37.2,31 C40.8,23.5 48.0,23.5 51.6,31 L60.0,31 L68.4,31 C70.8,26 75.6,26 78.0,31 L82.2,31 L83.5,34 L86.4,9.0 L89.5,39 L91.7,31 L97.2,31 C100.8,23.5 108.0,23.5 111.6,31 L120.0,31 L128.4,31 C130.8,26 135.6,26 138.0,31 L142.2,31 L143.5,34 L146.4,9.0 L149.5,39 L151.7,31 L157.2,31 C160.8,23.5 168.0,23.5 171.6,31 L180.0,31 L188.4,31 C190.8,26 195.6,26 198.0,31 L202.2,31 L203.5,34 L206.4,9.0 L209.5,39 L211.7,31 L217.2,31 C220.8,23.5 228.0,23.5 231.6,31 L240.0,31 L248.4,31 C250.8,26 255.6,26 258.0,31 L262.2,31 L263.5,34 L266.4,9.0 L269.5,39 L271.7,31 L277.2,31 C280.8,23.5 288.0,23.5 291.6,31 L300.0,31"/></svg>
     <div id="auth-error" class="hidden"></div>
@@ -64,7 +64,7 @@
   <main id="view-root" role="main"></main>
 
   <nav class="bottom-nav" aria-label="Primary">
-    <a class="nav-brand" href="#/dashboard" aria-label="Med100 home"><svg  viewBox="0 0 80 80" aria-hidden="true"><rect x="3" y="3" width="74" height="74" rx="19" fill="#161A22"/><path d="M17 54V27.5C17 24.5 20.6 23 22.8 25.1L39.8 42.1L57.2 24.8C59.5 22.5 63 24.2 63 27.4V54M17 54H63" stroke="#FAF6EF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M40 42V59" stroke="#D9452F" stroke-width="5.5" stroke-linecap="round"/></svg><b>Med<i>100</i></b></a>
+    <a class="nav-brand" href="#/dashboard" aria-label="Med100 home"><svg  viewBox="0 0 80 80" aria-hidden="true"><rect x="3" y="3" width="74" height="74" rx="19" fill="#161A22"/><path d="M17 54V27.5C17 24.5 20.6 23 22.8 25.1L39.8 42.1L57.2 24.8C59.5 22.5 63 24.2 63 27.4V54M17 54H63" stroke="#FAF6EF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M40 42V59" stroke="#D9452F" stroke-width="5.5" stroke-linecap="round"/></svg><b><span class="wm-med">Med</span><i class="wm-num">100</i></b></a>
     <button class="nav-btn" data-route="/dashboard">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
         <path d="M4 11.5 12 4l8 7.5"></path><path d="M6 10v9a1 1 0 0 0 1 1h3v-6h4v6h3a1 1 0 0 0 1-1v-9"></path>
