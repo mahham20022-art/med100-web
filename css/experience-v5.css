@@ -10,7 +10,8 @@ body{background:
 .app-header{background:var(--m100-ink);color:#F8F6F0;border-bottom:1px solid rgba(255,255,255,.1)}
 .app-header h1{color:#F8F6F0!important;font-family:Inter, sans-serif!important;font-size:17px!important;font-weight:800!important;letter-spacing:-.055em!important}
 .brand-lockup{gap:12px}
-.brand-mark{background:url('../icons/med100-mark.svg') center/contain no-repeat;width:38px!important;height:38px!important;padding:0!important;border:0!important;border-radius:10px!important}\n.brand-mark path,.brand-mark line{opacity:0}
+.brand-mark{background:url('../icons/med100-mark.svg') center/contain no-repeat;width:38px!important;height:38px!important;padding:0!important;border:0!important;border-radius:10px!important}
+.brand-mark path,.brand-mark line{opacity:0}
 #auth-screen .brand-mark-tile{width:78px;height:78px;border:0;background:transparent;border-radius:18px}
 #auth-screen .brand-mark-tile svg{display:none}
 #auth-screen .brand-mark-tile:after{content:none}
