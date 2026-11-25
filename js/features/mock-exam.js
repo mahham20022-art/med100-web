@@ -18,6 +18,14 @@ export function renderMockExam(root) {
   let remaining = duration * 60;
   let finished = false;
   let interval = null;
+  const preventExit = (event) => { if (!finished) { event.preventDefault(); event.returnValue = ''; } };
+  const guardInAppNavigation = (event) => {
+    const control = event.target.closest('.nav-btn, #profile-btn, [data-route]');
+    if (!control || finished) return;
+    if (!window.confirm('Leave this mock examination? Your current answers and timer will be lost.')) {
+      event.preventDefault(); event.stopImmediatePropagation();
+    }
+  };
 
   const bank = getQuestionBank();
   const systems = getQuestionBankSystems();
@@ -43,7 +51,7 @@ export function renderMockExam(root) {
         <div id="mock-availability" class="mock-availability">Available questions: ${bank.length}</div>
         <button id="mock-start" class="btn btn-primary">Start mock examination</button>
       </section>
-      <p class="mock-footnote">Once started, the timer cannot be paused. Your answers are recorded individually to your account when signed in. A connection failure is shown clearly and can be retried.</p>
+      <p class="mock-footnote">The timer runs while this exam page is open. Leaving the exam, refreshing or closing the page ends the session; you will be warned before leaving. Signed-in answers are recorded individually, and failed saves can be retried.</p>
     `;
     root.querySelector('#mock-system').value = system;
     root.querySelector('#mock-difficulty').value = difficulty;
@@ -81,6 +89,8 @@ export function renderMockExam(root) {
     remaining = duration * 60;
     finished = false;
     paintExam();
+    window.addEventListener('beforeunload', preventExit);
+    document.addEventListener('click', guardInAppNavigation, true);
     interval = setInterval(() => {
       remaining = Math.max(0,Math.ceil((deadline-Date.now())/1000));
       const clock = root.querySelector('#mock-clock');
@@ -114,12 +124,15 @@ export function renderMockExam(root) {
         <button id="mock-next" class="btn btn-primary">${index===questions.length-1?'Review answers':'Next question'}</button>
       </div>
       <div class="mock-submit-row"><span>${state.user?'Your selected answers are saved as you go.':'Guest session · answers are not saved to an account.'}</span><button id="mock-submit">Submit examination</button></div>
+      ${saves[index]==='failed'?'<p class="mock-save-error">This answer has not synced. You can retry without answering again.</p><button id="mock-retry-current" class="mock-retry-save">Retry saving this answer</button>':''}
+      ${saves[index]==='saving'?'<p class="mock-save-state">Saving answer…</p>':''}
     `;
     root.querySelectorAll('[data-jump]').forEach(b=>b.addEventListener('click',()=>{index=Number(b.dataset.jump);paintExam();}));
     root.querySelectorAll('[data-answer]').forEach(b=>b.addEventListener('click',()=>chooseAnswer(Number(b.dataset.answer))));
     root.querySelector('#mock-prev').addEventListener('click',()=>{if(index>0){index--;paintExam();}});
     root.querySelector('#mock-next').addEventListener('click',()=>{if(index<questions.length-1){index++;paintExam();}else paintExamReviewPrompt();});
     root.querySelector('#mock-submit').addEventListener('click',()=>confirmFinish());
+    root.querySelector('#mock-retry-current')?.addEventListener('click',()=>retrySave(index));
   }
 
   async function chooseAnswer(selected) {
@@ -133,12 +146,12 @@ export function renderMockExam(root) {
       await submitQuizAttempt(state.user.uid,{topicId:q.topicId,mcqId:q.id,selectedOption:selected,isCorrect:selected===q.correct});
       saves[current]='saved';
     }catch(error){console.error('Mock exam attempt save failed:',error);saves[current]='failed';}
-    if(!finished && index===current) paintExam();
+    if(finished) updateSavedStatus(current);
+    else if(index===current) paintExam();
   }
 
   function paintExamReviewPrompt() {
     const unanswered=answers.filter(a=>a===null).length;
-    const prior=root.innerHTML;
     root.innerHTML=`<div class="mock-confirm"><h2>Review before submission</h2><p>You have ${unanswered} unanswered question(s). You can return to them or submit now.</p><button id="mock-return" class="btn btn-outline">Return to questions</button><button id="mock-confirm-submit" class="btn btn-primary">Submit and see results</button></div>`;
     root.querySelector('#mock-return').addEventListener('click',()=>paintExam());
     root.querySelector('#mock-confirm-submit').addEventListener('click',()=>finishExam(false));
@@ -153,11 +166,41 @@ export function renderMockExam(root) {
   function finishExam(timedOut) {
     if(finished) return;
     finished=true;
+    window.removeEventListener('beforeunload', preventExit);
+    document.removeEventListener('click', guardInAppNavigation, true);
     if(interval){clearInterval(interval);interval=null;}
     remaining=Math.max(0,Math.ceil((deadline-Date.now())/1000));
     paintResults(timedOut);
   }
 
+  async function retrySave(i) {
+    const q=questions[i], selected=answers[i];
+    if(!state.user || selected===null || saves[i]==='saving' || saves[i]==='saved') return;
+    saves[i]='saving';
+    if(finished) updateSavedStatus(i); else if(index===i) paintExam();
+    try {
+      await submitQuizAttempt(state.user.uid,{topicId:q.topicId,mcqId:q.id,selectedOption:selected,isCorrect:selected===q.correct});
+      saves[i]='saved';
+    } catch(error) {
+      console.error('Mock exam retry failed:',error);
+      saves[i]='failed';
+    }
+    if(finished) updateSavedStatus(i); else if(index===i) paintExam();
+  }
+
+  function updateSavedStatus(i) {
+    const el=document.getElementById('mock-save-'+i);
+    if(el) el.textContent=saves[i]==='saved'?'Saved':saves[i]==='failed'?'Not synced — attempt needs retry':saves[i]==='saving'?'Saving…':saves[i]==='local'?'Guest · not saved':'Not answered';
+    const old=root.querySelector('[data-retry-save="'+i+'"]');
+    if(saves[i]==='failed' && !old) {
+      const host=el?.parentElement;
+      if(host) {
+        const b=document.createElement('button');
+        b.type='button'; b.className='mock-retry-save'; b.dataset.retrySave=String(i); b.textContent='Retry save';
+        b.addEventListener('click',()=>retrySave(i)); host.append(b);
+      }
+    } else if(saves[i]!=='failed' && old) old.remove();
+  }
   function paintResults(timedOut=false) {
     const answered=answers.filter(a=>a!==null).length;
     const correct=answers.reduce((sum,a,i)=>sum+(a!==null&&a===questions[i].correct?1:0),0);
@@ -178,17 +221,19 @@ export function renderMockExam(root) {
           <p class="mock-answer-line"><span>Your answer</span><b>${a===null?'—':esc(q.options[a])}</b></p>
           <p class="mock-answer-line correct-line"><span>Correct answer</span><b>${esc(q.options[q.correct])}</b></p>
           <p class="mock-explanation">${esc(q.explanation)}</p>
-          <small class="mock-save-state">${saves[i]==='saved'?'Saved':saves[i]==='failed'?'Not synced — attempt needs retry':saves[i]==='local'?'Guest · not saved':saves[i]==='saving'?'Still saving':'Not answered'}</small>
+          <small class="mock-save-state" id="mock-save-${i}">${saves[i]==='saved'?'Saved':saves[i]==='failed'?'Not synced — attempt needs retry':saves[i]==='local'?'Guest · not saved':saves[i]==='saving'?'Still saving':'Not answered'}</small>
+          ${saves[i]==='failed'?`<button type="button" class="mock-retry-save" data-retry-save="${i}">Retry save</button>`:''}
         </article>`;}).join('')}
       </section>
       <div class="mock-result-actions"><button id="mock-new" class="btn btn-primary">Start another mock exam</button><button id="mock-home" class="btn btn-outline">Back to dashboard</button></div>
     `;
     root.querySelector('#mock-new').addEventListener('click',()=>{if(interval)clearInterval(interval);paintSetup();});
     root.querySelector('#mock-home').addEventListener('click',()=>navigate('/dashboard'));
+    root.querySelectorAll('[data-retry-save]').forEach(b=>b.addEventListener('click',()=>retrySave(Number(b.dataset.retrySave))));
   }
 
   paintSetup();
-  return () => { if(interval) clearInterval(interval); };
+  return () => { window.removeEventListener('beforeunload', preventExit); document.removeEventListener('click', guardInAppNavigation, true); if(interval) clearInterval(interval); };
 }
 
 function formatTime(seconds) {
