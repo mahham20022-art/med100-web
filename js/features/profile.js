@@ -15,7 +15,8 @@ export function renderProfile(root, { onSignOut }) {
       <div class="card">
         <div class="profile-row"><span>Account</span><span>${isGuest ? 'Guest (this browser only)' : esc(user?.email || '—')}</span></div>
         <div class="profile-row"><span>Days written</span><span>${state.completedDays.length} / 100</span></div>
-        <div class="profile-row" style="border-bottom:none"><span>About Med100</span><a href="#/about">What it is, and is not</a></div>
+        <div class="profile-row"><span>About Med100</span><a href="#/about">What it is, and is not</a></div>
+        <div class="profile-row" style="border-bottom:none"><span>Published by</span><a href="https://thetract.org" target="_blank" rel="noopener">The Tract</a></div>
       </div>
       <div data-out>
         <button id="btn-signout" class="btn btn-outline">Sign out</button>

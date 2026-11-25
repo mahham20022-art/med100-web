@@ -159,7 +159,7 @@ ul,ol{margin:0;padding:0;list-style:none}
   .nav-btn{flex:0 0 46px;flex-direction:row;justify-content:flex-start;gap:13px;padding:0 14px;font-size:14px;font-weight:550;letter-spacing:0}
   .nav-btn .nav-icon{width:19px;height:19px}
   .nav-btn[aria-current="page"]::after{top:50%;right:14px;margin-top:-2.5px}
-  .bottom-nav::after{content:"Master medicine, one day at a time.";margin-top:auto;padding:14px;color:rgba(250,246,239,.42);font:500 12px/1.5 var(--f-ui)}
+  .bottom-nav::after{content:"Master medicine, one day at a time.\A A study aid from The Tract · thetract.org";white-space:pre-line;margin-top:auto;padding:14px;color:rgba(250,246,239,.42);font:500 12px/1.5 var(--f-ui)}
 }
 
 /* ---------- primitives ---------- */
@@ -598,3 +598,14 @@ input[type=range]{width:100%;accent-color:var(--signal)}
 .toast{position:fixed;left:50%;bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 22px);z-index:80;max-width:min(92vw,440px);padding:12px 16px;border-radius:14px;
   background:var(--ink);color:var(--paper);font-size:14px;line-height:1.45;box-shadow:var(--sh-3);transform:translate(-50%,12px);opacity:0;transition:opacity .3s,transform .3s var(--ease)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* publisher card on About */
+.publisher p{margin:12px 0 4px;color:var(--muted);font-size:14.5px}
+.publisher p a{color:var(--ink);font-weight:600}
+.pub-tract{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
+.pub-tract svg{width:44px;height:44px;flex:0 0 auto}
+.pub-tract span{display:flex;flex-direction:column;line-height:1.15}
+.pub-tract b{font:600 19px var(--f-display);letter-spacing:-.02em}
+.pub-tract small{font:600 10.5px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.muted-s{color:var(--muted);font-weight:400;font-size:12.5px}
+.auth-fine a{color:inherit}
