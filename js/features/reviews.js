@@ -8,6 +8,7 @@ import { state, subscribe } from '../state.js';
 import { upsertFlashcardSchedule } from '../core/sync.js';
 import { esc } from '../core/dom.js';
 import { navigate } from '../router.js';
+import { track } from '../core/track.js';
 import { flashcardsForCompletedDays, isDue, isWeak, GRADES, nextSchedule, clearHint } from '../core/spaced-repetition.js';
 
 const SEC_PER_CARD = 30;
@@ -19,7 +20,7 @@ export function renderReviews(root) {
   let queue = [], current = 0, revealed = false, showOpts = false;
   const done = new Set();
   const tally = { missed: 0, shaky: 0, clear: 0 };
-  let busy = false;
+  let busy = false, reported = false;
 
   function pools() {
     const sched = byId(), all = flashcardsForCompletedDays();
@@ -74,6 +75,7 @@ export function renderReviews(root) {
     }
     if (!queue.length) {
       const n = tally.missed + tally.shaky + tally.clear;
+      if (n && !reported) { reported = true; track('review-session/' + (n >= 20 ? '20+' : n >= 10 ? '10-19' : n >= 5 ? '5-9' : '1-4')); }
       const summary = n ? `<div class="rv-done"><strong>${n} card${n === 1 ? '' : 's'} reviewed</strong>
         <div class="rv-tally"><span class="g-clear">${tally.clear} clear</span><span class="g-shaky">${tally.shaky} needs work</span><span class="g-missed">${tally.missed} missed</span></div></div>` : '';
       const next = tab === 'due' && p.weak.filter((c) => !done.has(c.id)).length

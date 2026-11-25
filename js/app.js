@@ -26,6 +26,7 @@ import { renderAbout } from './features/about.js';
 import { renderProfile } from './features/profile.js';
 import { ON_OLD_HOST, moveFromOldHost, takeIncomingMove, finishIncomingMove } from './core/move.js';
 import { toast } from './features/guest-link.js';
+import { track } from './core/track.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -262,6 +263,7 @@ async function main() {
     clearAuthError();
     try {
       await signInWithGoogle();
+      track('signin/google');
     } catch (error) {
       console.error('Google sign-in failed:', error);
       authErrorBanner('Google sign-in failed: ' + error.message);
@@ -272,6 +274,7 @@ async function main() {
     clearAuthError();
     try {
       await signInAsGuest();
+      track('signin/guest');
     } catch (error) {
       console.error('Guest sign-in failed:', error);
       authErrorBanner('Guest sign-in failed: ' + error.message);

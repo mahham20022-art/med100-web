@@ -1,6 +1,7 @@
 // "Keep your progress": the guest → Google prompt, shared by the
 // dashboard (dismissible) and the profile (always there for guests).
 import { state, setState } from '../state.js';
+import { track } from '../core/track.js';
 import { linkGuestToGoogle } from '../core/auth.js';
 import { esc } from '../core/dom.js';
 
@@ -48,6 +49,7 @@ export function wireGuestLink(root) {
     btn.disabled = true; btn.textContent = 'Linking…'; msg.hidden = true;
     try {
       const r = await linkGuestToGoogle();
+      track('guest-linked/' + r.mode);
       toast(r.mode === 'linked'
         ? 'Linked. Your progress is now saved to your Google account.'
         : r.failed ? `Signed in to your existing account and moved your progress across (${r.failed} item${r.failed === 1 ? '' : 's'} could not be copied).`

@@ -1,6 +1,7 @@
 import { state, subscribe } from '../state.js';
 import { CURRICULUM, getDay, isReviewed, SOURCES_AS_OF } from '../data/curriculum.js';
 import { relatedFor } from '../data/days/related.js';
+import { track } from '../core/track.js';
 import { markDayComplete } from '../core/sync.js';
 import { computeStreaks } from '../core/streaks.js';
 import { dailyStreak } from '../core/activity.js';
@@ -287,6 +288,7 @@ function wireDetail(day) {
       btnComplete.disabled = true;
       try {
         await markDayComplete(state.user.uid, day.day, state.hasStartedAt);
+        track('day-done/' + day.day);
       } catch (error) {
         console.error('Failed to mark day done:', error);
         btnComplete.disabled = false;
