@@ -14,6 +14,7 @@ import { renderDashboard } from './features/dashboard.js';
 import { renderChallenge } from './features/challenge.js';
 import { renderTopics, renderTopicDetail } from './features/topics.js';
 import { renderMastery } from './features/mastery.js';
+import { renderMockExam } from './features/mock-exam.js';
 import { renderTeaching } from './features/teaching.js';
 import { renderReviews } from './features/reviews.js';
 import { renderNotes } from './features/notes.js';
@@ -124,8 +125,13 @@ function registerRoutes() {
     updateNavHighlight();
     return renderTopicDetail(view, day);
   });
+  route('/mock-exam', () => {
+    title.textContent = 'Mock Examination';
+    updateNavHighlight();
+    return renderMockExam(view);
+  });
   route('/mastery/:day', ({ day }) => {
-    title.textContent = 'AI Mastery Mode';
+    title.textContent = 'Question Practice';
     updateNavHighlight();
     return renderMastery(view, day);
   });
