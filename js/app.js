@@ -21,6 +21,8 @@ import { renderNotes } from './features/notes.js';
 import { renderProgress } from './features/analytics.js';
 import { renderAbout } from './features/about.js';
 import { renderProfile } from './features/profile.js';
+import { ON_OLD_HOST, moveFromOldHost, takeIncomingMove, finishIncomingMove } from './core/move.js';
+import { toast } from './features/guest-link.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -204,6 +206,7 @@ function wireNav() {
 }
 
 async function main() {
+  const moving = !ON_OLD_HOST && takeIncomingMove();
   registerRoutes();
   wireNav();
 
@@ -216,7 +219,19 @@ async function main() {
     return;
   }
 
+  let moveHandled = false, guestRequested = false;
   onAuthChange((user) => {
+    if (ON_OLD_HOST) { if (!moveHandled) { moveHandled = true; moveFromOldHost(user); } return; }
+    if (moving && !moveHandled) {
+      if (!user) {
+        if (!guestRequested) { guestRequested = true; signInAsGuest().catch((e) => { console.error(e); showAuth(); }); }
+        return;
+      }
+      moveHandled = true;
+      finishIncomingMove(user.uid).then((r) => {
+        if (r) toast(r.failed && !r.ok ? 'We could not bring your earlier progress over.' : 'Welcome to med100.thetract.org — your progress came with you.');
+      });
+    }
     teardownSubscriptions();
     setState({
       user,

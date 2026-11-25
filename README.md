@@ -91,7 +91,7 @@ Automatic on every push to `main` via `.github/workflows/deploy.yml` — no
 build step, the repo's files are uploaded to Pages as-is. One-time setup:
 repo → **Settings → Pages** → Source: **GitHub Actions**.
 
-Live at `https://<you>.github.io/med100-web/`.
+Live at `https://med100.thetract.org/` (fronted by The Tract's Worker; the github.io address forwards there and carries a guest's progress over, see `js/core/move.js`).
 
 ## Testing performed
 Every feature (auth, dashboard, challenge completion, topic detail, MCQ

@@ -65,7 +65,7 @@ export function wireGuestLink(root) {
 }
 
 /* the card disappears once the account is no longer a guest, so the result is announced on its own */
-function toast(text) {
+export function toast(text) {
   const t = document.createElement('div');
   t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = text;
   document.body.appendChild(t);
