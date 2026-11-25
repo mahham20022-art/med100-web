@@ -2,3 +2,6 @@
 .idea/
 .vscode/
 *.log
+days/
+sitemap.xml
+robots.txt

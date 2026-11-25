@@ -24,6 +24,8 @@ jobs:
           node-version: 20
       - name: Validate app, curriculum and question bank
         run: node scripts/validate-static.mjs
+      - name: Build crawlable topic pages, sitemap and robots.txt
+        run: node scripts/seo/build.mjs
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .
