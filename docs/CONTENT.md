@@ -32,11 +32,11 @@ sources: [
 - Topic page: review status under the title; a **Sources** section when sources exist.
 - `#/about`: what Med100 is and is not (study aid, not medical advice; question bank not a validated exam; Teaching Mode is self-assessed).
 
-## Specialist review packs
+## Review packs
 
 Days 19-100 live in `js/data/days/<specialty>.js`; day order is a round-robin across specialties (`js/data/days/index.js`). To print one review PDF per specialty for outside reviewers:
 
     node scripts/review-pack/export.mjs > /tmp/med100.json
     python3 scripts/review-pack/build.py /tmp/med100.json out/
 
-When a pack comes back signed, apply corrections in the specialty file and set `review: { status: 'reviewed', by, date }` on each approved day (validation enforces the fields).
+Review is done by the editor (Dr Mohamed Najm); no outside reviewers are named. After checking a day against its sources, apply corrections in the specialty file and set `review: { status: 'reviewed', by: 'Dr Mohamed Najm', date }` on it (validation enforces the fields).

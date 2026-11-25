@@ -1,7 +1,6 @@
 // The 100-day curriculum. Days 1-18 are below; days 19-100 live in
-// js/data/days/<specialty>.js so each specialty can be sent to its own
-// reviewer. Every day carries its own review status and sources (see
-// docs/CONTENT.md): nothing is called "reviewed" until a named clinician
+// js/data/days/<specialty>.js so each specialty can be reviewed as a unit. Every day carries its own review status and sources (see
+// docs/CONTENT.md): nothing is called "reviewed" until the editor
 // has checked it against the listed sources. Content is a study-aid
 // outline at a foundational, textbook level — classifications,
 // mechanisms, clinical reasoning frames — deliberately without specific
@@ -531,7 +530,7 @@ const DAYS = [
 // Any day not written yet falls back to an explicit "coming soon" stub.
 const byDay = new Map(DAYS.map((d) => [d.day, d]));
 
-/** True only when a clinician has signed the day off against its sources. */
+/** True only when the editor has checked the day against its sources. */
 export function isReviewed(day) {
   return !!(day && day.review && day.review.status === 'reviewed' && day.sources && day.sources.length);
 }

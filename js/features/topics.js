@@ -244,7 +244,7 @@ function detailTemplate(day) {
     <svg class="topic-beat" viewBox="0 0 300 34" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="${beatLine(300, 3).replace(/,(\d+(?:\.\d+)?)/g, (m, y) => ',' + (+y - 7).toFixed(1))}"/></svg>
     ${isDone ? '<div class="topic-status"><span class="ok">✓ Day complete</span><span>· written into your rhythm</span></div>' : ''}
     ${isReviewed(day)
-      ? `<p class="review-note is-ok">✓ Clinically reviewed by ${esc(day.review.by)} · ${esc(day.review.date)}</p>`
+      ? `<p class="review-note is-ok">✓ Checked against the sources below by ${esc(day.review.by)} · ${esc(day.review.date)}</p>`
       : `<p class="review-note">Not yet clinically reviewed. Use it as a study aid and check anything you would act on against current guidelines. <a href="#/about">Why</a></p>`}
 
     <section class="sec"><div class="sec-h"><span>01</span><h2>By the end you can</h2></div>
