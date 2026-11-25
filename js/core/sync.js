@@ -162,3 +162,58 @@ export function subscribeTeachingSessions(uid, onChange, onError) {
   );
   return s.onSnapshot(q, (snap) => onChange(snap.docs.map((d) => ({ id: d.id, ...d.data() }))), onError);
 }
+
+// --- Guest → Google: carry a guest's data into an existing account ----
+// Used only when the Google account already has Med100 data, so the
+// guest's anonymous uid cannot simply be upgraded in place. We read the
+// guest's documents while still signed in as the guest, then write them
+// into the Google account after signing in there. Each write is
+// independent: if the Rules refuse one kind (e.g. an append-only
+// collection with stricter field checks), the others still land and the
+// count of what failed is reported back.
+
+export async function exportUserData(uid) {
+  const s = store(), db = getDb();
+  const list = async (name) => { try { return (await s.getDocs(s.collection(db, 'users', uid, name))).docs.map((d) => ({ id: d.id, ...d.data() })); } catch { return []; } };
+  let progress = {};
+  try { const snap = await s.getDoc(s.doc(db, 'users', uid, 'challengeProgress', 'state')); progress = (snap.exists() && snap.data()) || {}; } catch { /* none */ }
+  return {
+    progress,
+    notes: await list('notes'),
+    flashcardSchedule: await list('flashcardSchedule'),
+    quizAttempts: await list('quizAttempts'),
+    teachingSessions: await list('teachingSessions'),
+  };
+}
+
+export async function importUserData(uid, data) {
+  const s = store(), db = getDb();
+  let ok = 0, failed = 0;
+  const run = async (fn) => { try { await fn(); ok++; } catch (e) { failed++; console.warn('merge write refused', e); } };
+  const p = data.progress || {};
+  const days = Array.isArray(p.completedDays) ? p.completedDays : [], skipped = Array.isArray(p.skippedDays) ? p.skippedDays : [];
+  if (days.length || skipped.length) {
+    await run(async () => {
+      const ref = s.doc(db, 'users', uid, 'challengeProgress', 'state');
+      const cur = await s.getDoc(ref);
+      const payload = { updatedAt: s.serverTimestamp(), lastActionDate: s.serverTimestamp() };
+      if (days.length) payload.completedDays = s.arrayUnion(...days);
+      if (skipped.length) payload.skippedDays = s.arrayUnion(...skipped);
+      if (!(cur.exists() && cur.data().startedAt)) payload.startedAt = s.serverTimestamp();
+      await s.setDoc(ref, payload, { merge: true });
+    });
+  }
+  for (const n of data.notes || []) await run(() => s.addDoc(s.collection(db, 'users', uid, 'notes'), { text: n.text || '', createdAt: n.createdAt || Date.now() }));
+  if ((data.flashcardSchedule || []).length) {
+    let existing = new Set();
+    try { existing = new Set((await s.getDocs(s.collection(db, 'users', uid, 'flashcardSchedule'))).docs.map((d) => d.id)); } catch { /* none */ }
+    for (const f of data.flashcardSchedule) {
+      if (existing.has(f.id)) continue;   /* the account's own schedule wins */
+      const { id, ...rest } = f;
+      await run(() => s.setDoc(s.doc(db, 'users', uid, 'flashcardSchedule', id), rest, { merge: true }));
+    }
+  }
+  for (const a of data.quizAttempts || []) { const { id, answeredAt, ...rest } = a; await run(() => submitQuizAttempt(uid, rest)); }
+  for (const t of data.teachingSessions || []) { const { id, completedAt, ...rest } = t; await run(() => submitTeachingSession(uid, rest)); }
+  return { ok, failed };
+}

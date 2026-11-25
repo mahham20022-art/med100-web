@@ -19,6 +19,7 @@ import { renderTeaching } from './features/teaching.js';
 import { renderReviews } from './features/reviews.js';
 import { renderNotes } from './features/notes.js';
 import { renderProgress } from './features/analytics.js';
+import { renderAbout } from './features/about.js';
 import { renderProfile } from './features/profile.js';
 
 const $ = (id) => document.getElementById(id);
@@ -183,6 +184,11 @@ function registerRoutes() {
     title.textContent = 'Profile';
     updateNavHighlight();
     return renderProfile(view, { onSignOut: () => signOutUser() });
+  });
+  route('/about', () => {
+    title.textContent = 'About';
+    updateNavHighlight();
+    return renderAbout(view);
   });
   notFound(() => {
     title.textContent = 'Med100';

@@ -45,6 +45,26 @@ if (failures.length) {
 console.log('Static validation passed: ' + jsFiles.length + ' JavaScript files and local index assets checked.');
 
 
+// Curriculum: every written day states its review status; a day marked
+// reviewed must name its reviewer, the date and at least one source.
+{
+  const { CURRICULUM } = await import('../js/data/curriculum.js');
+  const errs = [];
+  for (const d of CURRICULUM.filter((x) => !x.comingSoon)) {
+    const r = d.review;
+    if (!r || !['unreviewed', 'reviewed'].includes(r.status)) errs.push(`Day ${d.day}: missing review.status`);
+    if (!Array.isArray(d.sources)) errs.push(`Day ${d.day}: sources must be an array`);
+    if (r && r.status === 'reviewed') {
+      if (!r.by || !/^\d{4}-\d{2}-\d{2}$/.test(r.date || '')) errs.push(`Day ${d.day}: reviewed days need review.by and review.date (YYYY-MM-DD)`);
+      if (!d.sources || !d.sources.length) errs.push(`Day ${d.day}: reviewed days need at least one source`);
+      for (const s of d.sources || []) if (!s.label || !/^https?:\/\//.test(s.url || '')) errs.push(`Day ${d.day}: each source needs a label and an http(s) url`);
+    }
+  }
+  if (errs.length) { console.error('Curriculum validation failed:'); errs.forEach((e) => console.error(' - ' + e)); process.exit(1); }
+  const written = CURRICULUM.filter((x) => !x.comingSoon), done = written.filter((x) => x.review?.status === 'reviewed').length;
+  console.log(`Curriculum validation passed: ${written.length} written days, ${done} clinically reviewed.`);
+}
+
 // Validate the published MCQ bank used by topic practice and mock exams.
 const { getQuestionBank } = await import('../js/data/questions.js');
 const bank = getQuestionBank();

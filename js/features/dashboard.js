@@ -11,12 +11,16 @@ import { navigate } from '../router.js';
 import { dueFlashcards, overdueCount } from '../core/spaced-repetition.js';
 import { icon } from '../core/icons.js';
 import { rhythmStrip, beatLine } from '../core/rhythm.js';
+import { hasGuestProgress, dashboardLinkDismissed, guestLinkCard, wireGuestLink } from './guest-link.js';
 
 const TOTAL_DAYS = 100;
 let drawn = false; // animate the strip once per session, not on every data refresh
 
 export function renderDashboard(root) {
-  const paint = () => { root.innerHTML = template(); wire(root); drawn = true; };
+  const paint = () => {
+    if (root.querySelector('[data-keep] [data-msg]:not([hidden])')) return;   /* keep the link result on screen */
+    root.innerHTML = template(); wire(root); drawn = true;
+  };
   paint();
   return subscribe(paint);
 }
@@ -152,6 +156,7 @@ function template() {
   const nextDay = Math.min(total + 1, TOTAL_DAYS), today = getDay(nextDay), isDone = total >= TOTAL_DAYS;
   return `<div class="dash">
     ${hero(nextDay, today, isDone)}
+    ${hasGuestProgress() && !dashboardLinkDismissed() ? `<div class="keep-wrap">${guestLinkCard({ dismissible: true })}</div>` : ''}
     ${rhythmPanel(total, current, nextDay, isDone)}
     ${dueSection()}
     ${toolsSection(nextDay)}
@@ -161,6 +166,7 @@ function template() {
 }
 
 function wire(root) {
+  wireGuestLink(root);
   root.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => navigate(b.dataset.go)));
   root.querySelectorAll('[data-topic]').forEach((b) => b.addEventListener('click', () => {
     const day = getDayByTopicId(b.dataset.topic);

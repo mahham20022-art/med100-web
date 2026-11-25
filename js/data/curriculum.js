@@ -1,5 +1,7 @@
-// The 100-day curriculum. Real, reviewed content for the days listed in
-// DAYS below; every other day (1-100) is generated as a `comingSoon`
+// The 100-day curriculum. Written content for the days listed in DAYS
+// below (each carries its own clinical-review status and sources, see
+// docs/CONTENT.md: nothing is called "reviewed" until a clinician has
+// checked it against the listed sources); every other day (1-100) is generated as a `comingSoon`
 // stub so the Challenge/Topics UI has a full 100-day structure to
 // render and navigate, without pretending 100 days of real content
 // exist yet. Content here is a study-aid outline at a foundational,
@@ -13,6 +15,8 @@ const DAYS = [
     title: 'Heart Failure — The Big Picture',
     system: 'Cardiology',
     topicId: 'cardio-hf-1',
+    review: { status: 'unreviewed' },
+    sources: [],
     objectives: [
       'Define heart failure in terms of impaired pump function, not just low ejection fraction',
       'Distinguish HFrEF from HFpEF and why the distinction changes management',
@@ -42,6 +46,8 @@ Many patients have both, since the two sides share a circulation.`,
     title: 'Asthma — Pathophysiology to Presentation',
     system: 'Pulmonology',
     topicId: 'pulm-asthma-1',
+    review: { status: 'unreviewed' },
+    sources: [],
     objectives: [
       'Explain the three components of asthma pathophysiology: inflammation, bronchoconstriction, airway remodeling',
       'Recognize the classic triad of symptoms and common triggers',
@@ -72,6 +78,8 @@ The key distinguishing feature from COPD: asthma's obstruction is substantially 
     title: 'Acute Kidney Injury — The Three Buckets',
     system: 'Nephrology',
     topicId: 'nephro-aki-1',
+    review: { status: 'unreviewed' },
+    sources: [],
     objectives: [
       'Classify AKI into prerenal, intrinsic, and postrenal causes',
       'Describe the basic diagnostic approach to localize the cause',
@@ -101,6 +109,8 @@ Prolonged, uncorrected prerenal injury is the classic way intrinsic ATN develops
     title: 'Diabetes Mellitus — Type 1 vs Type 2',
     system: 'Endocrinology',
     topicId: 'endo-dm-1',
+    review: { status: 'unreviewed' },
+    sources: [],
     objectives: [
       'Contrast the core mechanism of Type 1 (autoimmune beta-cell destruction) vs Type 2 (insulin resistance plus relative deficiency)',
       'Recognize typical presentations at diagnosis for each type',
@@ -126,6 +136,8 @@ Diagnosis in both rests on the same lab categories — fasting plasma glucose, o
     title: 'Stroke — Ischemic vs Hemorrhagic',
     system: 'Neurology',
     topicId: 'neuro-stroke-1',
+    review: { status: 'unreviewed' },
+    sources: [],
     objectives: [
       'Differentiate ischemic from hemorrhagic stroke by mechanism and why imaging comes before treatment',
       'Recognize the time-sensitivity of ischemic stroke management',
@@ -151,6 +163,8 @@ Hemorrhagic stroke results from bleeding into brain tissue (intracerebral) or in
     title: 'Sepsis — Recognizing the Syndrome',
     system: 'Infectious Disease',
     topicId: 'id-sepsis-1',
+    review: { status: 'unreviewed' },
+    sources: [],
     objectives: [
       'Define sepsis as a dysregulated host response to infection causing organ dysfunction, not simply "a bad infection"',
       'Recognize common early clinical clues suggesting sepsis',
@@ -176,6 +190,8 @@ Septic shock is the subset with persistent hypotension requiring vasopressors to
     title: 'COPD — Fixed Obstruction and Phenotypes',
     system: 'Pulmonology',
     topicId: 'pulm-copd-1',
+    review: { status: 'unreviewed' },
+    sources: [],
     objectives: [
       'Contrast COPD’s largely fixed airflow obstruction with asthma’s reversible obstruction',
       'Describe the two classic clinical phenotypes and why they are a spectrum, not strict categories',
@@ -203,6 +219,8 @@ Unlike asthma, spirometry shows obstruction that improves only minimally, if at 
     title: 'Inflammatory Bowel Disease — Crohn’s vs Ulcerative Colitis',
     system: 'Gastroenterology',
     topicId: 'gi-ibd-1',
+    review: { status: 'unreviewed' },
+    sources: [],
     objectives: [
       'Distinguish the pattern of bowel involvement in Crohn’s disease from ulcerative colitis',
       'Recognize characteristic extraintestinal associations',
@@ -228,6 +246,8 @@ Crohn’s disease can affect any part of the GI tract from mouth to anus, charac
     title: 'Rheumatoid Arthritis — A Systemic Autoimmune Disease',
     system: 'Rheumatology',
     topicId: 'rheum-ra-1',
+    review: { status: 'unreviewed' },
+    sources: [],
     objectives: [
       'Describe the typical joint distribution and pattern of morning stiffness in RA',
       'Recognize RA as a systemic disease, not only a joint disease',
@@ -253,6 +273,8 @@ RA is systemic: beyond joints, it can cause rheumatoid nodules, interstitial lun
     title: 'Anemia — A Framework by Cell Size',
     system: 'Hematology/Oncology',
     topicId: 'heme-anemia-1',
+    review: { status: 'unreviewed' },
+    sources: [],
     objectives: [
       'Use MCV to sort anemia into microcytic, normocytic, and macrocytic categories',
       'Name the classic cause in each category',
@@ -282,6 +304,8 @@ This framework doesn’t replace a full work-up, but it reliably narrows the dif
     title: 'Mood Disorders — Major Depression vs Bipolar Disorder',
     system: 'Psychiatry',
     topicId: 'psych-mood-1',
+    review: { status: 'unreviewed' },
+    sources: [],
     objectives: [
       'Recognize the core diagnostic features of a major depressive episode',
       'Distinguish a manic from a hypomanic episode',
@@ -307,6 +331,8 @@ This distinction matters enormously in practice: treating a bipolar depressive e
     title: 'Preeclampsia — New Hypertension in Pregnancy',
     system: 'Obstetrics/Gynecology',
     topicId: 'obgyn-preeclampsia-1',
+    review: { status: 'unreviewed' },
+    sources: [],
     objectives: [
       'Define preeclampsia and when in pregnancy it is considered',
       'Recognize features that define "severe" disease',
@@ -332,6 +358,8 @@ Delivery of the placenta is the only definitive treatment; management before tha
     title: 'Arrhythmias — Stable vs Unstable, Not Just Fast vs Slow',
     system: 'Cardiology',
     topicId: 'cardio-arrhythmia-1',
+    review: { status: 'unreviewed' },
+    sources: [],
     objectives: [
       'Classify arrhythmias broadly into bradyarrhythmias and tachyarrhythmias',
       'Understand why hemodynamic stability, not the rhythm name, drives the urgency of management',
@@ -357,6 +385,8 @@ A stable patient allows time for a more deliberate work-up (12-lead ECG, identif
     title: 'Chronic Kidney Disease — Staging and Its Downstream Effects',
     system: 'Nephrology',
     topicId: 'nephro-ckd-1',
+    review: { status: 'unreviewed' },
+    sources: [],
     objectives: [
       'Understand that CKD staging is based on estimated GFR (and albuminuria)',
       'Recognize the major downstream complications of declining kidney function',
@@ -382,6 +412,8 @@ The gradual, often asymptomatic early course is what makes CKD different from AK
     title: 'Thyroid Disorders — Hypo- vs Hyperthyroidism',
     system: 'Endocrinology',
     topicId: 'endo-thyroid-1',
+    review: { status: 'unreviewed' },
+    sources: [],
     objectives: [
       'Contrast the metabolic direction of hypo- vs hyperthyroidism and their typical symptoms',
       'Understand the basic logic of TSH/free T4 interpretation',
@@ -409,6 +441,8 @@ The TSH-first approach to interpretation works because, in primary thyroid disea
     title: 'Seizures and Epilepsy — Focal vs Generalized',
     system: 'Neurology',
     topicId: 'neuro-seizure-1',
+    review: { status: 'unreviewed' },
+    sources: [],
     objectives: [
       'Distinguish focal (partial) seizures from generalized seizures by onset and awareness',
       'Understand the difference between a single seizure and epilepsy',
@@ -434,6 +468,8 @@ A first-time seizure work-up focuses on identifying provoking/reversible causes 
     title: 'Meningitis — Recognizing a Neurologic Emergency',
     system: 'Infectious Disease',
     topicId: 'id-meningitis-1',
+    review: { status: 'unreviewed' },
+    sources: [],
     objectives: [
       'Recognize the classic triad of meningitis and its limitations',
       'Understand the basic rationale for lumbar puncture',
@@ -459,6 +495,8 @@ Bacterial meningitis is a true emergency — outcomes are strongly time-dependen
     title: 'Shock — One Final Common Pathway, Several Starting Points',
     system: 'Emergency/Critical Care',
     topicId: 'em-shock-1',
+    review: { status: 'unreviewed' },
+    sources: [],
     objectives: [
       'Define shock as inadequate tissue perfusion, not simply low blood pressure',
       'Classify shock into its four major categories by underlying mechanism',
@@ -488,6 +526,11 @@ Each category points toward a different first move — volume for hypovolemic sh
 // Fill the rest of the 1-100 range as explicit "coming soon" stubs so
 // Challenge/Topics can render a complete 100-day structure honestly.
 const byDay = new Map(DAYS.map((d) => [d.day, d]));
+
+/** True only when a clinician has signed the day off against its sources. */
+export function isReviewed(day) {
+  return !!(day && day.review && day.review.status === 'reviewed' && day.sources && day.sources.length);
+}
 export const CURRICULUM = Array.from({ length: 100 }, (_, i) => {
   const day = i + 1;
   return byDay.get(day) || { day, comingSoon: true, title: 'Coming soon', system: '—' };

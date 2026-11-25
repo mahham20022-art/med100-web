@@ -1,5 +1,5 @@
 import { state, subscribe } from '../state.js';
-import { CURRICULUM, getDay } from '../data/curriculum.js';
+import { CURRICULUM, getDay, isReviewed } from '../data/curriculum.js';
 import { markDayComplete } from '../core/sync.js';
 import { computeStreaks } from '../core/streaks.js';
 import { esc, qsa } from '../core/dom.js';
@@ -243,6 +243,9 @@ function detailTemplate(day) {
     <h1>${esc(day.title)}</h1>
     <svg class="topic-beat" viewBox="0 0 300 34" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="${beatLine(300, 3).replace(/,(\d+(?:\.\d+)?)/g, (m, y) => ',' + (+y - 7).toFixed(1))}"/></svg>
     ${isDone ? '<div class="topic-status"><span class="ok">✓ Day complete</span><span>· written into your rhythm</span></div>' : ''}
+    ${isReviewed(day)
+      ? `<p class="review-note is-ok">✓ Clinically reviewed by ${esc(day.review.by)} · ${esc(day.review.date)}</p>`
+      : `<p class="review-note">Not yet clinically reviewed. Use it as a study aid and check anything you would act on against current guidelines. <a href="#/about">Why</a></p>`}
 
     <section class="sec"><div class="sec-h"><span>01</span><h2>By the end you can</h2></div>
       <ol class="objectives">${day.objectives.map((o) => `<li>${esc(o)}</li>`).join('')}</ol></section>
@@ -255,6 +258,9 @@ function detailTemplate(day) {
 
     <section class="sec"><div class="sec-h"><span>04</span><h2>Clinical pearls</h2></div>
       <div class="pearls">${day.clinicalPearls.map((p) => `<div class="pearl">${PEARL}${esc(p)}</div>`).join('')}</div></section>
+
+    ${day.sources && day.sources.length ? `<section class="sec"><div class="sec-h"><span>05</span><h2>Sources</h2></div>
+      <ol class="sources">${day.sources.map((x) => `<li><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.label)}</a></li>`).join('')}</ol></section>` : ''}
 
     <div class="topic-actions">
       <button id="btn-mastery" class="btn btn-outline">Test yourself</button>
