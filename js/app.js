@@ -32,7 +32,7 @@ const $ = (id) => document.getElementById(id);
 // The splash is the loading screen: it stays at least long enough for the
 // trace to finish writing (shorter for returning visitors), then fades.
 const SPLASH_T0 = performance.now();
-let SPLASH_MIN = 1750;
+let SPLASH_MIN = 2050;
 try {
   if (localStorage.getItem('med100_seen') === '1') { SPLASH_MIN = 850; $('loading-screen').classList.add('is-quick'); }
   localStorage.setItem('med100_seen', '1');
