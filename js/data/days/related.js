@@ -51,4 +51,6 @@ export const RELATED = {
   'neuro-dementia-1': [tr('/topics/dementia/', 'Dementia', 'Topic hub'), tr('/guides/mental-status-examination/', 'Mental status examination', 'Guide')],
   'neuro-cord-1': [tr('/topics/neuro-oncology/', 'Neuro-oncology', 'Topic hub')],
 };
-export const relatedFor = (topicId) => RELATED[topicId] || [];
+// Fever Compass is offline for review (26 Nov 2026): its links are dropped here until it returns.
+const OFFLINE = new Set(['Fever Compass']);
+export const relatedFor = (topicId) => (RELATED[topicId] || []).filter((r) => !OFFLINE.has(r.kind));
